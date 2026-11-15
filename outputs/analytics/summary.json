@@ -1,0 +1,28 @@
+{
+  "status": "PASSED",
+  "run_id": "b98aa6fa-2478-41eb-b4db-4157570225ac",
+  "created_utc": "2026-11-14T10:09:51.300873+00:00",
+  "rows": 8760,
+  "hdfs_input": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+  "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
+  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b",
+  "validation_utc": "2026-11-14 10:10:44 UTC",
+  "scope": "2019-01-01T00:00:00Z <= timestamp_utc < 2020-01-01T00:00:00Z",
+  "calendar_timezone": "UTC",
+  "behavior_timezone": "Europe/Berlin",
+  "unit": "MW",
+  "query_sha256": {
+    "daily": "3b8f7caf0daf586c03659fe84b6ef17e31d69c2c48a3b2f0637ed7bb626db13e",
+    "monthly": "c1c9d784207c6360922bc83f5535223d5e2fc7a6d30cc7ab0db032e712e834d4",
+    "hourly": "7575596764dbc1efacbfff149d95bfb1362ee825935a1bbeb77b0d35244da0ed",
+    "day_type": "69594e2639b68a3c2748f3e3d7e5f5b51bd9468934f40f80206985286b260842",
+    "peaks": "70d1247defcfa2c5eeca44c27f355971a69501225d4bbfd3773837f8965d66a8"
+  },
+  "files": {
+    "daily.csv": "2672f93d9ad3c906bf72878c0d1470ededb2deb389a757b1a985b4e5b6d5d2d0",
+    "monthly.csv": "19d926ad88d5e6faa3fb8c901d155160d3fd5d7616a421454b6762898268d739",
+    "hourly.csv": "a056796f01828677f38217fc9a4b1f28ed219072216b20e07224c8e5a0e6ce61",
+    "day_type.csv": "fb22e5836ac12a6676230bc1d8256a42cf2b7bae4d16b221b9b934683f50f6ea",
+    "peaks.csv": "902a7e566909818e3c4137d6f7f7775d91e9f0d40d47489bab222a8a043b70bf"
+  }
+}

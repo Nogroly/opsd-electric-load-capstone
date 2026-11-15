@@ -1,0 +1,20 @@
+# Downloaded source data and local event files
+/data/raw/*
+!/data/raw/.gitkeep
+/data/replay_runs/
+
+# Local Python and editor files
+__pycache__/
+*.py[cod]
+.venv/
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# Local environment files and credentials
+.env
+.env.*
+*.pem
+*.key

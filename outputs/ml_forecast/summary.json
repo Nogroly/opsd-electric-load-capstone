@@ -1,0 +1,58 @@
+{
+  "status": "PASSED",
+  "run_id": "091c8a2c-b5ec-4eba-bdd7-1d37b92aef54",
+  "created_utc": "2026-11-14T10:13:27.844312+00:00",
+  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b",
+  "baseline_run_id": "4eab5a23-b550-421f-a65f-a94bb7882f77",
+  "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
+  "hdfs_input": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+  "unit": "MW",
+  "timezone": "UTC",
+  "horizon_hours": 1,
+  "features": [
+    "lag_1_mw",
+    "lag_24_mw",
+    "lag_168_mw",
+    "hour_utc",
+    "weekday_utc"
+  ],
+  "counts": {
+    "train": 5664,
+    "validation": 720,
+    "test": 2208
+  },
+  "candidates": [
+    {
+      "num_trees": 20,
+      "max_depth": 5,
+      "validation_mae_mw": 1217.2955247368827,
+      "validation_rmse_mw": 1561.0672039462418
+    },
+    {
+      "num_trees": 50,
+      "max_depth": 7,
+      "validation_mae_mw": 872.9262923895631,
+      "validation_rmse_mw": 1124.1875981190326
+    }
+  ],
+  "selected_candidate": {
+    "num_trees": 50,
+    "max_depth": 7,
+    "validation_mae_mw": 872.9262923895631,
+    "validation_rmse_mw": 1124.1875981190326
+  },
+  "seed": 42,
+  "train_period": "2019-01-08 <= t < 2019-09-01",
+  "validation_period": "2019-09-01 <= t < 2019-10-01",
+  "test_period": "2019-10-01 <= t < 2020-01-01",
+  "selection_rule": "Lowest validation MAE; test never selects hyperparameters",
+  "evaluation": "Rolling one-hour-ahead with observed prior loads; no publication latency modeled",
+  "files": {
+    "predictions.csv": "75fba03d910d62b2d065b0d74c7f52114237e559db60a2d15102e351b46c217a",
+    "metrics.csv": "53936b3f6330a769287329166c22b774f94672e8f09ba33aa1b63ecee28646d7",
+    "feature_importance.json": "3bf674c439f1d211be03100736ba05c002820e6ab17aada649d031519c654e39"
+  },
+  "code_sha256": {
+    "jobs/ml_forecast.py": "cf82a1ce2e8c1745f2db9e62a3b41cacc5133a55e57c464392fd626779704233"
+  }
+}

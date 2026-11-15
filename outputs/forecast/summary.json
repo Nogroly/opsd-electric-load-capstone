@@ -1,0 +1,35 @@
+{
+  "status": "PASSED",
+  "run_id": "4eab5a23-b550-421f-a65f-a94bb7882f77",
+  "created_utc": "2026-11-14T10:11:24.684520+00:00",
+  "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
+  "hdfs_input": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b",
+  "validation_utc": "2026-11-14 10:12:15 UTC",
+  "unit": "MW",
+  "timezone": "UTC",
+  "horizon_hours": 1,
+  "history_period": "2019-01-01 <= t < 2019-09-01 (5832 hours; no parameter fitting)",
+  "validation_period": "2019-09-01 <= t < 2019-10-01",
+  "test_period": "2019-10-01 <= t < 2020-01-01",
+  "counts": {
+    "validation": 720,
+    "test": 2208
+  },
+  "models": {
+    "last_hour": "y(t-1h)",
+    "last_week_168h": "y(t-168h)"
+  },
+  "selection_rule": "Lowest validation MAE, tie: last_hour; test never selects model",
+  "selected_model": "last_week_168h",
+  "availability_assumption": "Actual at t-1h is available at nominal origin t-1h; publication latency and revisions are not modeled",
+  "evaluation": "Rolling one-hour-ahead backtest with observed history updates, not a fixed-origin multi-month forecast",
+  "files": {
+    "predictions.csv": "b2df6c04f396638312b007b0257905ca059a8e1489cba4fd06d3155131506e11",
+    "metrics.csv": "e4c91b39d8d03ce92a256b81892024004d65ba65e5ec065eb9148c06b1bb3e40"
+  },
+  "code_sha256": {
+    "jobs/forecast_baselines.py": "80c5e450b3b058ada4a03a41591865ba04a919c325cc5033f88615d920ab7951",
+    "sql/forecast_baselines.sql": "f2a4f0fd5ce65681afa8de06ccd8bd118ac3a310f572bb54f619eb2d1ab243bb"
+  }
+}

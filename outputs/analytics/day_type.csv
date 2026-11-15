@@ -1,0 +1,3 @@
+day_type,observations,avg_mw,min_mw,max_mw
+weekday,6264,59042.56928480204,33577.0,76311.0
+weekend,2496,48330.133012820515,33295.0,64680.0

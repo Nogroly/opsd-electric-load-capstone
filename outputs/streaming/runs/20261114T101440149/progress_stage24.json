@@ -1,0 +1,130 @@
+{
+  "run_id": "20261114T101440149",
+  "stage": "stage24",
+  "ended_utc": "2026-11-14T10:17:25.570672+00:00",
+  "input_rows_this_launch": 8,
+  "microbatches": 2,
+  "source": "/workspace/data/replay_runs/20261114T101440149/input",
+  "hdfs_output": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/parquet",
+  "hdfs_checkpoint": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/checkpoint",
+  "progress": [
+    {
+      "id": "b4eca02f-566c-4a13-94dd-05d612fc610c",
+      "runId": "01cb744a-9f9a-42be-9d01-05a291cd6c73",
+      "name": null,
+      "timestamp": "2026-11-14T10:17:17.002Z",
+      "batchId": 4,
+      "numInputRows": 4,
+      "inputRowsPerSecond": 0.0,
+      "processedRowsPerSecond": 0.7095973035302466,
+      "durationMs": {
+        "addBatch": 3841,
+        "commitOffsets": 440,
+        "getBatch": 243,
+        "latestOffset": 167,
+        "queryPlanning": 572,
+        "triggerExecution": 5636,
+        "walCommit": 60
+      },
+      "stateOperators": [
+        {
+          "operatorName": "dedupe",
+          "numRowsTotal": 20,
+          "numRowsUpdated": 4,
+          "allUpdatesTimeMs": 117,
+          "numRowsRemoved": 0,
+          "allRemovalsTimeMs": 0,
+          "commitTimeMs": 904,
+          "memoryUsedBytes": 5248,
+          "numRowsDroppedByWatermark": 0,
+          "numShufflePartitions": 2,
+          "numStateStoreInstances": 2,
+          "customMetrics": {
+            "loadedMapCacheHitCount": 0,
+            "loadedMapCacheMissCount": 2,
+            "numDroppedDuplicateRows": 0,
+            "stateOnCurrentVersionSizeBytes": 3968
+          }
+        }
+      ],
+      "sources": [
+        {
+          "description": "FileStreamSource[file:/workspace/data/replay_runs/20261114T101440149/input]",
+          "startOffset": {
+            "logOffset": 3
+          },
+          "endOffset": {
+            "logOffset": 4
+          },
+          "latestOffset": null,
+          "numInputRows": 4,
+          "inputRowsPerSecond": 0.0,
+          "processedRowsPerSecond": 0.7095973035302466
+        }
+      ],
+      "sink": {
+        "description": "FileSink[hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/parquet]",
+        "numOutputRows": -1
+      }
+    },
+    {
+      "id": "b4eca02f-566c-4a13-94dd-05d612fc610c",
+      "runId": "01cb744a-9f9a-42be-9d01-05a291cd6c73",
+      "name": null,
+      "timestamp": "2026-11-14T10:17:22.674Z",
+      "batchId": 5,
+      "numInputRows": 4,
+      "inputRowsPerSecond": 0.7052186177715092,
+      "processedRowsPerSecond": 1.4015416958654519,
+      "durationMs": {
+        "addBatch": 1648,
+        "commitOffsets": 45,
+        "getBatch": 527,
+        "latestOffset": 444,
+        "queryPlanning": 144,
+        "triggerExecution": 2854,
+        "walCommit": 35
+      },
+      "stateOperators": [
+        {
+          "operatorName": "dedupe",
+          "numRowsTotal": 24,
+          "numRowsUpdated": 4,
+          "allUpdatesTimeMs": 30,
+          "numRowsRemoved": 0,
+          "allRemovalsTimeMs": 0,
+          "commitTimeMs": 857,
+          "memoryUsedBytes": 6208,
+          "numRowsDroppedByWatermark": 0,
+          "numShufflePartitions": 2,
+          "numStateStoreInstances": 2,
+          "customMetrics": {
+            "loadedMapCacheHitCount": 2,
+            "loadedMapCacheMissCount": 2,
+            "numDroppedDuplicateRows": 0,
+            "stateOnCurrentVersionSizeBytes": 4672
+          }
+        }
+      ],
+      "sources": [
+        {
+          "description": "FileStreamSource[file:/workspace/data/replay_runs/20261114T101440149/input]",
+          "startOffset": {
+            "logOffset": 4
+          },
+          "endOffset": {
+            "logOffset": 5
+          },
+          "latestOffset": null,
+          "numInputRows": 4,
+          "inputRowsPerSecond": 0.7052186177715092,
+          "processedRowsPerSecond": 1.4015416958654519
+        }
+      ],
+      "sink": {
+        "description": "FileSink[hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/parquet]",
+        "numOutputRows": -1
+      }
+    }
+  ]
+}

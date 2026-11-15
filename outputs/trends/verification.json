@@ -1,0 +1,10 @@
+{
+  "status": "PASSED",
+  "trend_run_id": "78315eb6-561f-4a77-b674-78664aae61cb",
+  "days_checked": 365,
+  "hour_week_groups_checked": 168,
+  "month_hour_groups_checked": 288,
+  "deviations_checked": 20,
+  "daily_crosscheck": "PASSED",
+  "rolling_windows": "PASSED"
+}

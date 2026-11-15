@@ -1,0 +1,20 @@
+{
+  "status": "PASSED",
+  "run_id": "20261114T101440149",
+  "stage": "stage24",
+  "created_utc": "2026-11-14T10:17:42.640806+00:00",
+  "purpose": "24-hour historical replay of 2019-10-01, not live data",
+  "emitted_files": 24,
+  "spark_input_rows_this_launch": 8,
+  "unique_hdfs_rows": 24,
+  "observed_residuals": 23,
+  "observed_mae_mw": 1089.5124014217952,
+  "rows_sha256": "3630d5786ae6d8e9ad5ae771c2b8d69109bc07baa488b991f420b19cac9a1a5d",
+  "latest_observed_utc": "2019-10-01 23:00:00",
+  "latest_observed_mw": 45922.0,
+  "next_hour_utc": "2019-10-02 00:00:00",
+  "forecast_next_mw": 45136.16071660425,
+  "hdfs_output": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/parquet",
+  "hdfs_checkpoint": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261114T101440149/checkpoint",
+  "offline_forecasts_match": true
+}

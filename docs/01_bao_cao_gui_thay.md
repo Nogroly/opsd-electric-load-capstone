@@ -1,0 +1,13 @@
+# Project 4 — tóm tắt tiến độ để thầy nhận xét
+
+**Bài toán và ý nghĩa thực tế.** Dùng [bộ Time series OPSD phát hành 06/10/2020](https://data.open-power-system-data.org/time_series/2020-10-06/) để phân tích phụ tải điện thực tế của Đức theo giờ (MW), nhận diện nhịp biến động và đánh giá dự báo phụ tải trước một giờ. Quan sát và ước lượng nhu cầu theo giờ là bước đầu hữu ích cho lập kế hoạch và nhận diện thời điểm cần kiểm tra thêm. Tập nghiên cứu là năm 2019, không phải dữ liệu điện trực tiếp.
+
+  **Đã làm.** Plan A: PySpark chọn 2 cột từ CSV, lọc Đức 2019, ghi 8.760 giờ lên HDFS/Parquet, đọc lại và đạt 8/8 nhóm kiểm định; Spark SQL dựng dashboard mô tả. Plan B: MA7/MA30 và nhiệt đồ cho xu hướng; Spark ML Random Forest dự báo 1 giờ, MAE test tháng 10–12 là **1.135,29 MW** trên 2.208 giờ, thấp hơn **42,60%** so với baseline tốt nhất trên cùng tập test. Plan C: phát lại 24 giờ lịch sử thành JSON theo ba đợt 8→16→24; Structured Streaming ghi HDFS/checkpoint, thử khởi động lại và dữ liệu trùng; 25 JSON được đọc nhưng còn 24 giờ duy nhất.
+
+**Vì sao chọn công nghệ này?** Spark dùng chung cho ETL, SQL, ML và xử lý luồng; HDFS/Parquet giữ tập đã chuẩn hóa có schema để đọc lại. Docker Compose giúp dựng ba dịch vụ nhất quán cho nhóm trên một máy. File JSON đủ để kiểm tra dữ liệu đến theo đợt và checkpoint; chưa có nguồn trực tiếp để Kafka tạo thêm giá trị rõ ràng. Tập 8.760 giờ riêng Đức không cần Spark để chạy nhanh; mục tiêu ở đây là chứng minh kiến trúc và khả năng kiểm định.
+
+**Có thể kiểm chứng trực tiếp.** Mở `outputs/quality/quality_summary.json`, `outputs/trends/verification.json`, `outputs/ml_forecast/metrics.csv`, `outputs/streaming/checks.json` và bốn dashboard HTML tương ứng. `demo_verify_mae.ps1` tự tính lại MAE từ từng dự báo test; `demo_preflight.ps1` rà trạng thái trước demo. Khi chạy thật, slide sơ đồ chỉ từng khối nhận gì và tạo gì, còn lời nói giải thích bước đang chạy trên terminal.
+
+**Giới hạn.** Demo trên một máy với một DataNode và Spark `local[2]`; dữ liệu chỉ một năm/một nước. Mô hình giả định phụ tải giờ trước sẵn có đúng giờ. Plan C là replay hữu hạn từ lịch sử, chưa kết nối nguồn sự kiện trực tiếp hoặc Kafka. Những quan sát xu hướng không suy ra nguyên nhân. Ngày 14/11 đã chạy lại tuần tự Plan A → baseline → Plan B → Plan C; preflight xác nhận các đầu ra cùng ETL run và Plan C dùng đúng ML run vừa tạo.
+
+**Mong thầy góp ý vào buổi tập Thứ Ba:** (1) cách giải thích sơ đồ và từng bước terminal đã đủ rõ chưa; (2) phần xu hướng/ML đã đúng trọng tâm phân tích của capstone chưa; (3) trước bản cuối Thứ Năm, nên ưu tiên bổ sung biến nghiệp vụ hay củng cố đánh giá trên nhiều giai đoạn?

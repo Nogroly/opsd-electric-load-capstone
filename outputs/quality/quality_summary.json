@@ -1,0 +1,125 @@
+{
+  "execution_timestamp_utc": "2026-11-14 10:10:44 UTC",
+  "overall_status": "PASSED",
+  "failure_reasons": [],
+  "data_lineage": {
+    "source_csv_path": "/workspace/data/raw/time_series_60min_singleindex.csv",
+    "target_hdfs_path": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+    "total_source_rows": 50401,
+    "group_1_invalid_or_empty_ts_count": 0,
+    "group_2_valid_out_of_scope_ts_count": 41641,
+    "group_3_valid_in_scope_ts_count": 8760,
+    "in_scope_source_error_rows": 0,
+    "records_prepared_to_write": 8760,
+    "readback_rows": 8760
+  },
+  "tests": {
+    "test_0_source_baseline_quality": {
+      "name": "Kiểm tra chất lượng dữ liệu nguồn làm baseline",
+      "group_1_invalid_ts_count": 0,
+      "group_2_out_of_scope_count": 41641,
+      "group_3_in_scope_count": 8760,
+      "in_scope_error_count": 0,
+      "duplicate_source_keys": 0,
+      "unexpected_source_hours": 0,
+      "passed": true,
+      "message": "Nguồn hợp lệ làm baseline"
+    },
+    "test_schema": {
+      "name": "Schema và kiểu dữ liệu của Parquet",
+      "passed": true,
+      "expected": {
+        "timestamp_utc": "timestamp",
+        "country": "string",
+        "load_mw": "double",
+        "year": "int",
+        "month": "int",
+        "source_file": "string"
+      },
+      "actual": {
+        "timestamp_utc": "timestamp",
+        "country": "string",
+        "load_mw": "double",
+        "month": "int",
+        "source_file": "string",
+        "year": "int"
+      },
+      "message": "Schema đúng"
+    },
+    "test_6_etl_summary_consistency": {
+      "name": "Báo cáo ETL khớp nguồn, đích, SHA256 và số dòng",
+      "passed": true,
+      "checks": {
+        "summary_present": true,
+        "etl_success": true,
+        "source_path_matches": true,
+        "source_filename_matches": true,
+        "target_path_matches": true,
+        "source_sha256_matches": true,
+        "source_row_count_matches": true,
+        "invalid_ts_count_matches": true,
+        "out_of_scope_count_matches": true,
+        "in_scope_count_matches": true,
+        "prepared_count_matches": true
+      },
+      "message": "Báo cáo ETL nhất quán"
+    },
+    "test_1_row_count_and_keys": {
+      "name": "Kiểm tra số dòng đọc lại, số dòng chuẩn bị ghi và khóa trùng",
+      "expected_rows": 8760,
+      "records_prepared_to_write": 8760,
+      "readback_rows": 8760,
+      "distinct_keys_count": 8760,
+      "duplicate_keys_count": 0,
+      "passed": true,
+      "message": "Số dòng đọc lại khớp chuẩn bị ghi, không có khóa trùng"
+    },
+    "test_2_timestamp_continuity": {
+      "name": "Kiểm tra phạm vi thời gian UTC và tính liên tục (không thiếu giờ)",
+      "expected_min_ts": "2019-01-01 00:00:00",
+      "actual_min_ts": "2019-01-01 00:00:00",
+      "expected_max_ts": "2019-12-31 23:00:00",
+      "actual_max_ts": "2019-12-31 23:00:00",
+      "timeline_gaps_count": 0,
+      "passed": true,
+      "message": "Phạm vi chính xác và liên tục 100%"
+    },
+    "test_3_nulls_and_valid_values": {
+      "name": "Kiểm tra NULL, số hữu hạn và phụ tải > 0",
+      "null_counts_by_column": {
+        "timestamp_utc": 0,
+        "country": 0,
+        "load_mw": 0,
+        "year": 0,
+        "month": 0,
+        "source_file": 0
+      },
+      "total_nulls": 0,
+      "nan_or_inf_load_count": 0,
+      "non_positive_load_count": 0,
+      "min_load_mw": 33295.0,
+      "max_load_mw": 76311.0,
+      "avg_load_mw": 55990.26,
+      "passed": true,
+      "message": "Không có NULL, số hữu hạn và phụ tải > 0"
+    },
+    "test_4_derived_columns": {
+      "name": "Kiểm tra tính nhất quán của country, year, month, source_file",
+      "invalid_country_count": 0,
+      "invalid_year_count": 0,
+      "invalid_month_count": 0,
+      "invalid_source_file_count": 0,
+      "passed": true,
+      "message": "Cột dẫn xuất hoàn toàn nhất quán"
+    },
+    "test_5_exact_reconciliation_except_all": {
+      "name": "Đối chiếu chính xác bộ ba (country, timestamp_utc, load_mw) bằng exceptAll 2 chiều",
+      "processed_except_source_count": 0,
+      "source_except_processed_count": 0,
+      "method": "Spark exceptAll (cùng thứ tự cột, cùng kiểu dữ liệu, không dùng ngưỡng xấp xỉ)",
+      "passed": true,
+      "message": "Hai phía không có phần khác biệt (khớp chính xác 100%)"
+    }
+  },
+  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b"
+}

@@ -1,0 +1,63 @@
+{
+  "status": "PASSED",
+  "run_id": "78315eb6-561f-4a77-b674-78664aae61cb",
+  "created_utc": "2026-11-14T10:13:00.839828+00:00",
+  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b",
+  "hdfs_input": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+  "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
+  "unit": "MW",
+  "day_timezone": "UTC",
+  "behavior_timezone": "Europe/Berlin",
+  "rows": 8760,
+  "days": 365,
+  "hour_week_groups": 168,
+  "month_hour_groups": 288,
+  "reference_period": "2019-01-01 <= t < 2019-09-01",
+  "comparison_period": "2019-09-01 <= t < 2020-01-01",
+  "reference_rule": "Average of preceding Jan-Aug observations with the same Europe/Berlin weekday and hour",
+  "ma30_low": {
+    "day_utc": "2019-08-25",
+    "mw": 51446.43194444444
+  },
+  "ma30_high": {
+    "day_utc": "2019-02-07",
+    "mw": 62917.75416666668
+  },
+  "month_low": {
+    "month_utc": 8,
+    "avg_mw": 52171.90725806452
+  },
+  "month_high": {
+    "month_utc": 1,
+    "avg_mw": 61597.13978494625
+  },
+  "strongest_ma30_rise_30d": {
+    "start_day_utc": "2019-11-10",
+    "end_day_utc": "2019-12-10",
+    "change_mw": 4362.313888888879
+  },
+  "strongest_ma30_fall_30d": {
+    "start_day_utc": "2019-04-05",
+    "end_day_utc": "2019-05-05",
+    "change_mw": -5205.470833333333
+  },
+  "hour_week_low": {
+    "weekday_local": 6,
+    "hour_local": 3,
+    "mw": 39208.75
+  },
+  "hour_week_high": {
+    "weekday_local": 2,
+    "hour_local": 11,
+    "mw": 68638.71153846153
+  },
+  "files": {
+    "daily_trend.csv": "49e3a58c6d3e0da266f44bba92ba2e8b1d9b6b4fb6170f57165a20c47b77213a",
+    "hour_week.csv": "1bf015a1eae126b017ac31dae7755de1f2125b0328fa90d4ba738fb7773b471d",
+    "month_hour.csv": "069644059cb1503b4cfaba73c78d1547e1816d8ce340c100ee284bc94b4eedbd",
+    "largest_deviations.csv": "c9185c3ca9c8b4a39465323d63d0f12cd7e4d5622ad71c0ecfd152fac18ecbe8"
+  },
+  "code_sha256": {
+    "jobs/trend_analysis.py": "8302e2b99dd86417d7ca28ebd3b0bf3ff4c3892b993e2e9918dbf19f2d62b787"
+  }
+}

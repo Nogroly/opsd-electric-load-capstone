@@ -1,0 +1,83 @@
+{
+  "overall_status": "PASSED",
+  "case_count": 19,
+  "fixture_directory": "/tmp/bigdata-regression-mwgmg9sf",
+  "cases": [
+    {
+      "name": "ETL refuses other overwrite targets",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects invalid_timestamp on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects empty_timestamp on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects null_load on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects nan_load on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects infinite_load on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects negative_load on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects zero_load on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects duplicate_key on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "ETL rejects shifted_hour on 8760-row fixture",
+      "passed": true
+    },
+    {
+      "name": "Validation accepts valid full-year control",
+      "passed": true
+    },
+    {
+      "name": "Validation rejects missing ETL summary",
+      "passed": true
+    },
+    {
+      "name": "Validation rejects failed/stale/wrong-target summary",
+      "passed": true
+    },
+    {
+      "name": "Validation rejects source null and reports actual rate",
+      "passed": true
+    },
+    {
+      "name": "Validation detects small load change and metadata mismatch",
+      "passed": true
+    },
+    {
+      "name": "Validation detects missing hour and reports readback rate",
+      "passed": true
+    },
+    {
+      "name": "Validation rejects Infinity and writes valid JSON",
+      "passed": true
+    },
+    {
+      "name": "Validation reports schema failure",
+      "passed": true
+    },
+    {
+      "name": "Failed ETL replaces stale SUCCESS summary",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b",
+  "execution_timestamp_utc": "2026-11-14 10:09:38 UTC",
+  "source_csv_path": "/workspace/data/raw/time_series_60min_singleindex.csv",
+  "source_filename": "time_series_60min_singleindex.csv",
+  "output_hdfs_path": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
+  "status": "SUCCESS",
+  "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
+  "total_source_rows": 50401,
+  "group_1_invalid_or_empty_ts_count": 0,
+  "group_2_valid_out_of_scope_ts_count": 41641,
+  "group_3_valid_in_scope_ts_count": 8760,
+  "records_prepared_to_write": 8760,
+  "finished_timestamp_utc": "2026-11-14 10:09:45 UTC"
+}

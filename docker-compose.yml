@@ -1,0 +1,111 @@
+# ============================================================
+# BigData Stack: NameNode + DataNode + Spark (local[2])
+# Spark  : apache/spark:3.5.3-java17-python3  (Java 17, Python 3.10, Spark 3.5.3)
+# Hadoop : apache/hadoop:3.3.6                (Hadoop 3.3.6, Java 11)
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # 1. HDFS NameNode – quản lý metadata filesystem
+  # ----------------------------------------------------------
+  namenode:
+    image: apache/hadoop:3.3.6
+    container_name: namenode
+    hostname: namenode
+    user: root
+    environment:
+      HADOOP_HOME: /opt/hadoop
+      # Tự động format NameNode chỉ khi thư mục chưa tồn tại (giữ dữ liệu qua restart)
+      ENSURE_NAMENODE_DIR: "/opt/hadoop/dfs/name/current"
+      # Sinh file core-site.xml
+      CORE-SITE_XML_fs.defaultFS: "hdfs://namenode:8020"
+      CORE-SITE_XML_hadoop.http.staticuser.user: "root"
+      # Sinh file hdfs-site.xml (Replication factor = 1)
+      HDFS-SITE_XML_dfs.replication: "1"
+      HDFS-SITE_XML_dfs.namenode.name.dir: "file:///opt/hadoop/dfs/name"
+      HDFS-SITE_XML_dfs.namenode.rpc-address: "namenode:8020"
+      HDFS-SITE_XML_dfs.namenode.http-address: "0.0.0.0:9870"
+      HDFS-SITE_XML_dfs.permissions.enabled: "false"
+      HDFS-SITE_XML_dfs.namenode.datanode.registration.ip-hostname-check: "false"
+    command: ["hdfs", "namenode"]
+    ports:
+      - "9870:9870"   # HDFS Web UI
+      - "8020:8020"   # NameNode RPC
+    volumes:
+      - namenode_data:/opt/hadoop/dfs/name
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9870/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    networks:
+      - bigdata
+
+  # ----------------------------------------------------------
+  # 2. HDFS DataNode – lưu trữ block dữ liệu thực tế
+  # ----------------------------------------------------------
+  datanode:
+    image: apache/hadoop:3.3.6
+    container_name: datanode
+    hostname: datanode
+    user: root
+    depends_on:
+      namenode:
+        condition: service_healthy
+    environment:
+      HADOOP_HOME: /opt/hadoop
+      # Sinh file core-site.xml trỏ về NameNode
+      CORE-SITE_XML_fs.defaultFS: "hdfs://namenode:8020"
+      CORE-SITE_XML_hadoop.http.staticuser.user: "root"
+      # Sinh file hdfs-site.xml (Replication factor = 1)
+      HDFS-SITE_XML_dfs.replication: "1"
+      HDFS-SITE_XML_dfs.datanode.data.dir: "file:///opt/hadoop/dfs/data"
+      HDFS-SITE_XML_dfs.permissions.enabled: "false"
+    command: ["hdfs", "datanode"]
+    ports:
+      - "9864:9864"   # DataNode Web UI
+    volumes:
+      - datanode_data:/opt/hadoop/dfs/data
+    networks:
+      - bigdata
+
+  # ----------------------------------------------------------
+  # 3. Spark – xử lý batch ETL, chạy local[2]
+  #    Image: apache/spark:3.5.3-java17-python3
+  #    Java 17 | Python 3.10 (Ubuntu 22.04) | Spark 3.5.3
+  # ----------------------------------------------------------
+  spark:
+    image: apache/spark:3.5.3-java17-python3
+    container_name: spark
+    hostname: spark
+    user: root
+    depends_on:
+      namenode:
+        condition: service_healthy
+    environment:
+      SPARK_MODE: "local"
+      SPARK_MASTER_URL: "local[2]"
+      # Đưa spark-submit vào PATH
+      PATH: "/opt/spark/bin:/opt/spark/sbin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      PYSPARK_PYTHON: "/usr/bin/python3"
+      PYSPARK_DRIVER_PYTHON: "/usr/bin/python3"
+    command: ["tail", "-f", "/dev/null"]
+    volumes:
+      - .:/workspace
+    ports:
+      - "4040:4040"   # Spark UI
+    networks:
+      - bigdata
+
+# ----------------------------------------------------------
+# Networks & Volumes
+# ----------------------------------------------------------
+networks:
+  bigdata:
+    driver: bridge
+
+volumes:
+  namenode_data:
+  datanode_data:

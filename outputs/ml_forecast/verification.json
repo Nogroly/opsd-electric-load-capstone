@@ -1,0 +1,14 @@
+{
+  "status": "PASSED",
+  "ml_run_id": "091c8a2c-b5ec-4eba-bdd7-1d37b92aef54",
+  "baseline_run_id": "4eab5a23-b550-421f-a65f-a94bb7882f77",
+  "targets_checked": 2928,
+  "metric_rows_checked": 15,
+  "same_targets_and_baselines": "PASSED",
+  "selection_check": "PASSED",
+  "files": {
+    "predictions.csv": "75fba03d910d62b2d065b0d74c7f52114237e559db60a2d15102e351b46c217a",
+    "metrics.csv": "53936b3f6330a769287329166c22b774f94672e8f09ba33aa1b63ecee28646d7",
+    "feature_importance.json": "3bf674c439f1d211be03100736ba05c002820e6ab17aada649d031519c654e39"
+  }
+}
