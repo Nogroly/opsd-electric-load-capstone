@@ -61,6 +61,6 @@ Spark thống nhất ETL, SQL, ML và Structured Streaming; HDFS/Parquet cho t�
 
 **Bạn nhóm chỉnh slide và Docs:** ưu tiên độ đọc rõ, trật tự kể chuyện, caption và logo công nghệ. Có thể đề xuất sửa câu chữ trong `docs/05_slide_content_review.md`. Trước khi đổi số, đối chiếu `outputs/` và ghi nguồn ngay trên slide. Giữ rõ ba mức: kết quả thực đã làm; giới hạn; ý tưởng sau này. Không gọi replay lịch sử là dữ liệu trực tiếp hay gọi MA30 là AI dự báo.
 
-Repo dự kiến **Private**. Xem [quyền truy cập và bàn giao](docs/00_access_and_handoff.md): thầy và bạn nhóm cần được mời vào GitHub, còn slide Canva cần cấp quyền riêng.
+Repo **Public** tại [GitHub](https://github.com/Nogroly/opsd-electric-load-capstone). Thầy và bạn nhóm mở link để đọc ngay; bạn nhóm cần được mời làm cộng tác viên nếu muốn sửa trong repo. Slide Canva có quyền truy cập riêng. Xem [cách bàn giao](docs/00_access_and_handoff.md).
 
 **Khi cần góp ý:** tạo issue/nhận xét trong repo với số slide, câu đang có, câu đề xuất và lý do. Đừng sửa kết quả kiểm định hoặc chỉ số mô hình chỉ để slide đẹp hơn.

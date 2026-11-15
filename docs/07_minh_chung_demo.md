@@ -1,6 +1,6 @@
 # Minh chứng để trình chiếu hoặc chụp màn hình
 
-Chạy lệnh trong PowerShell tại `D:\OneDrive\Tài liệu\ChatGPT\BigData`. Ảnh nên chụp bằng `Win + Shift + S`, đặt tên theo số thứ tự và lưu trong `evidence/`. Mỗi ảnh chỉ cần khoanh một kết luận; không chụp nguyên màn hình đầy log Spark.
+Chạy lệnh trong PowerShell tại thư mục gốc của repo. Ảnh nên chụp bằng `Win + Shift + S`, đặt tên theo số thứ tự và lưu trong `evidence/`. Mỗi ảnh chỉ cần khoanh một kết luận; không chụp nguyên màn hình đầy log Spark.
 
 | # | Mở/chạy | Điều cần thấy và chú thích ngắn |
 |---|---|---|
