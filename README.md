@@ -24,7 +24,7 @@ Các nhánh hiện cùng ETL run ID; Plan C dùng đúng ML run của lần ch�
 
 ## Xem kết quả nhanh, không cần chạy lại
 
-Mở bốn file HTML có sẵn: `outputs/analytics/index.html`, `outputs/trends/index.html`, `outputs/ml_forecast/index.html`, `outputs/streaming/index.html`. Đọc [docs/03_demo_7_phut.md](docs/03_demo_7_phut.md) để biết phải chỉ vào đâu và nói gì. [Slide Canva chỉnh sửa](https://www.canva.com/d/38WkXqBjUBGzYt6) gồm 11 trang; slide 5 là sơ đồ khối, slide 6 là xu hướng, 8–9 là dự báo, 10 là streaming. [Hướng dẫn rà từng slide](docs/05_slide_content_review.md) dành cho bạn nhóm.
+Xem ngay trên GitHub bốn ảnh dashboard: [Plan A](outputs/analytics/dashboard-preview.png) · [xu hướng](outputs/trends/dashboard-preview.png) · [ML](outputs/ml_forecast/dashboard-preview.png) · [streaming](outputs/streaming/dashboard-preview.png). Nếu muốn tương tác, tải repo và mở bốn file `index.html` tương ứng trên máy; GitHub hiển thị mã HTML khi bấm trực tiếp. Đọc [docs/03_demo_7_phut.md](docs/03_demo_7_phut.md) để biết phải chỉ vào đâu và nói gì. [Slide Canva chỉnh sửa](https://www.canva.com/d/38WkXqBjUBGzYt6) gồm 11 trang; slide 5 là sơ đồ khối, slide 6 là xu hướng, 8–9 là dự báo, 10 là streaming. [Hướng dẫn rà từng slide](docs/05_slide_content_review.md) dành cho bạn nhóm.
 
 [Trang mở slide cho thầy và nhóm](slides/README.md) có cả link xem và link chỉnh sửa; Canva cần cấp quyền riêng.
 
