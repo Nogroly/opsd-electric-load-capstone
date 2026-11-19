@@ -1,5 +1,7 @@
 # Project 4 — bản học kỹ thuật để tự giải thích và kiểm chứng
 
+Lưu ý về thứ tự demo hiện tại. Plan A gồm dữ liệu, Spark SQL và phân tích xu hướng. Plan B gồm hai baseline cùng Random Forest. Plan C chạy replay sau B. Dùng [kịch bản slide và PowerShell](../DEMO_SLIDE_POWERSHELL.md) để thực hành. Các tên giai đoạn dưới đây giữ theo lượt chuẩn bị 14/11.
+
 Đọc trước khi tập demo. Phạm vi đã làm: **Plan A** (CSV → PySpark ETL → HDFS/Parquet → Spark SQL), **Plan B** (phân tích xu hướng + Random Forest dự báo trước 1 giờ), **Plan C** (phát lại 24 giờ lịch sử bằng Spark Structured Streaming). Số liệu dưới đây lấy từ các tệp trong `outputs/` ngày 14/11; không diễn giải dashboard cũ thành dữ liệu thời gian thực.
 
 ## 1. Câu chuyện nghiệp vụ trong 45 giây

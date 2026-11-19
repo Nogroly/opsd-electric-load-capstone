@@ -1,5 +1,7 @@
 # Rà 11 slide — nội dung đã chốt, việc còn chỉnh bằng Canva
 
+Bản hướng dẫn hiện tại ở [sửa slide và chụp minh chứng](../reporting/2026-11-17/HUONG_DAN_SUA_SLIDE_VA_CHUP_MINH_CHUNG.md). Luồng đã chốt là A → B → C → kết luận, với slide 10 là Plan C và slide 11 là kết luận. Bảng dưới lưu nội dung từ lượt chuẩn bị trước.
+
 | Slide | Vai trò khi nói | Điều cần giữ | Gợi ý chỉnh hình thức |
 |---:|---|---|---|
 | 1 | Tên đề tài, nhóm | Phân tích phụ tải Đức + dự báo 1 giờ | Giữ title ngắn, chữ lớn; hình năng lượng không watermark. |

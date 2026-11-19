@@ -1,5 +1,5 @@
 {
-  "execution_timestamp_utc": "2026-11-14 10:12:15 UTC",
+  "execution_timestamp_utc": "2026-11-18 15:31:48 UTC",
   "overall_status": "PASSED",
   "failure_reasons": [],
   "data_lineage": {
@@ -121,5 +121,5 @@
       "message": "Hai phía không có phần khác biệt (khớp chính xác 100%)"
     }
   },
-  "etl_run_id": "73be36bd-74fa-41c3-9bc9-28582e11da7b"
+  "etl_run_id": "d018b7b3-ce13-47f3-ab14-4354382e4844"
 }

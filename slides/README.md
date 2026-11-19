@@ -5,4 +5,4 @@
 - [Gợi ý chỉnh từng slide](../docs/05_slide_content_review.md)
 - [Ảnh, biểu đồ hỗ trợ](../assets/slide/)
 
-Slide 5 là sơ đồ khối có logo và tên công nghệ; 6 là xu hướng; 8–9 là dự báo và cách đọc MAE; 10 là replay streaming. Đây là bản 11 slide đã lưu để tập thuyết trình, không phải bản PDF đính kèm repo. Quyền truy cập Canva độc lập với quyền GitHub. Bạn nhóm kiểm tra quyền mở link và xuất PDF từ Canva trước khi gửi bản cuối cho thầy.
+Luồng đã chốt dùng slide 5 cho sơ đồ khối, 6 cho kiểm định, 7 cho phân tích, 8–9 cho dự báo, 10 cho replay và 11 cho kết luận. Tìm theo tiêu đề nếu bản Canva nhóm đang sửa có thứ tự khác. Dùng [kịch bản kết hợp slide và PowerShell](../DEMO_SLIDE_POWERSHELL.md) để tập. Quyền truy cập Canva độc lập với GitHub. Kiểm tra đúng bản Canva đã duyệt và xuất PowerPoint trước khi gửi thầy.

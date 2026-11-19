@@ -1,5 +1,7 @@
 # Project 4 — tóm tắt tiến độ để thầy nhận xét
 
+Báo cáo đang duyệt ở [Google Docs](https://docs.google.com/document/d/1JPeIrLZtFNuXXrQxdubIThnghMXupaitLNkaSWNu2bE/edit). Kết quả snapshot trong repo đã cập nhật từ lượt kiểm định ngày 18/11. Thứ tự demo hiện tại là Plan A gồm dữ liệu và xu hướng, Plan B so sánh dự báo, Plan C replay. Xem [kịch bản slide và PowerShell](../DEMO_SLIDE_POWERSHELL.md).
+
 **Mở nhanh:** [slide 11 trang](https://www.canva.com/d/_os28k-m_tNQ_pu) · [ảnh dashboard Plan A](../outputs/analytics/dashboard-preview.png) · [xu hướng](../outputs/trends/dashboard-preview.png) · [dự báo ML](../outputs/ml_forecast/dashboard-preview.png) · [streaming](../outputs/streaming/dashboard-preview.png) · [kịch bản demo 7 phút](03_demo_7_phut.md).
 
 **Bài toán và ý nghĩa thực tế.** Dùng [bộ Time series OPSD phát hành 06/10/2020](https://data.open-power-system-data.org/time_series/2020-10-06/) để phân tích phụ tải điện thực tế của Đức theo giờ (MW), nhận diện nhịp biến động và đánh giá dự báo phụ tải trước một giờ. Quan sát và ước lượng nhu cầu theo giờ là bước đầu hữu ích cho lập kế hoạch và nhận diện thời điểm cần kiểm tra thêm. Tập nghiên cứu là năm 2019, không phải dữ liệu điện trực tiếp.

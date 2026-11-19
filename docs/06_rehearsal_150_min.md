@@ -1,5 +1,7 @@
 # Lịch 2 giờ 30 phút — chốt bài và tập demo
 
+Kịch bản hiện tại chạy trực tiếp A → B → C, có thời gian chờ Spark ở từng phần. Tập theo [kịch bản slide và PowerShell](../DEMO_SLIDE_POWERSHELL.md) và bấm giờ trên máy. Các mốc 7–9 phút trong lịch tham khảo bên dưới thuộc bài tập thuyết trình trước.
+
 | Phút | Việc làm | Đầu ra phải có |
 |---:|---|---|
 | 0–15 | Mở bản slide Canva, bốn dashboard; chạy `./demo_preflight.ps1` và `./demo_verify_mae.ps1`. | Biết ba container đang Up, tất cả PASSED, MAE tính lại khớp. |

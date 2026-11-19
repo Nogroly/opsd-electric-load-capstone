@@ -39,6 +39,6 @@ Chọn 168 giờ trước bằng MAE validation tháng 9. Trên 2.208 giờ test
 
 Đã đối soát độc lập 2.928 mục tiêu, 5.856 dự báo và 10 dòng chỉ số với CSV gốc; kiểm tra timestamp nguồn không ở tương lai.
 
-Lần chạy: 4eab5a23-b550-421f-a65f-a94bb7882f77
+Lần chạy: de887f16-4cd0-4863-a498-29e3742bc52f
 
 Phương pháp: https://otexts.com/fpp3/simple-methods.html và https://otexts.com/fpp3/tscv.html

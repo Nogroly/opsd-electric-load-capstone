@@ -1,5 +1,7 @@
 # Thẻ nói demo 7 phút — Project 4
 
+Tài liệu này lưu kịch bản từ lượt tập trước. Luồng hiện tại chạy trực tiếp A → B → C. Dùng [kịch bản slide và PowerShell](../DEMO_SLIDE_POWERSHELL.md) và [README](../README.md) cho buổi bảo vệ.
+
 **Trước giờ trình bày:** mở Docker Desktop và PowerShell tại thư mục dự án. Chạy `./demo_preflight.ps1`; nếu ba container chưa chạy, gõ `docker compose up -d`, chờ rồi `docker compose ps`. Mở sẵn bốn dashboard HTML trong `outputs/analytics`, `outputs/trends`, `outputs/ml_forecast`, `outputs/streaming`. Dùng kết quả đã kiểm định để giữ demo gọn; chỉ chạy lại job nặng khi thầy muốn xem quá trình.
 
 | Lúc | Màn hình/lệnh | Nói với thầy |

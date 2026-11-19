@@ -6,27 +6,23 @@ import json
 import math
 from pathlib import Path
 
+from chart_svg import axes, number as num, svg
 from stream_paths import ROOT, checked_id
 
 OUT = ROOT/'outputs/streaming'
-
-
-def num(value):
-    return f'{float(value):,.2f}'.replace(',', '_').replace('.', ',').replace('_', '.')
 
 
 def chart(rows):
     values = [float(r['actual_mw']) for r in rows]
     values += [float(r['forecast_for_observed_mw']) for r in rows if r['forecast_for_observed_mw']]
     lo = math.floor(min(values)/5000)*5000
-    hi = math.ceil(max(values)/5000)*5000
-    left, top, width, height = 75, 28, 990, 260
-    xy = lambda i, v: (left+i*width/24, top+(hi-v)*height/(hi-lo))
-    parts = ['<style>text{font:13px Arial;fill:#476274}</style>']
-    for tick in range(lo, hi+1, 5000):
-        y=xy(0,tick)[1]
-        parts.append(f'<line x1="{left}" x2="{left+width}" y1="{y:.1f}" y2="{y:.1f}" stroke="#dbe6ed"/><text x="{left-8}" y="{y+4:.1f}" text-anchor="end">{tick:,.0f}</text>')
-    for field,color in [('actual_mw','#087ea4'),('forecast_for_observed_mw','#e28b31')]:
+    hi = max(lo + 5000, math.ceil(max(values)/5000)*5000)
+    left, top, width, height = 112, 25, 925, 248
+    bottom = top + height
+    xy = lambda i, v: (left+i*width/23, top+(hi-v)*height/(hi-lo))
+    parts = axes(left, top, width, height, lo, hi, 5000, 'Giờ quan sát ngày 01/10/2019 (UTC)', 'Phụ tải (MW)')
+    fields = [('actual_mw','#087ea4','Quan sát'),('forecast_for_observed_mw','#e28b31','Dự báo trước 1 giờ')]
+    for field,color,_ in fields:
         points=' '.join(f'{xy(i,float(r[field]))[0]:.1f},{xy(i,float(r[field]))[1]:.1f}'
                         for i,r in enumerate(rows) if r[field])
         parts.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="3"/>')
@@ -34,10 +30,12 @@ def chart(rows):
         x,y=xy(i,float(r['actual_mw']))
         label=f"{r['observed_utc']}: {num(r['actual_mw'])} MW"
         parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4" fill="#087ea4"><title>{html.escape(label)}</title></circle>')
-    for hour in (0,4,8,12,16,20,24):
-        parts.append(f'<text x="{xy(hour,lo)[0]:.1f}" y="318" text-anchor="middle">{hour:02d}:00</text>')
-    parts.append('<text x="80" y="344" fill="#087ea4">Xanh: quan sát</text><text x="290" y="344" fill="#e28b31">Cam: dự báo trước 1 giờ</text><text x="8" y="20">MW</text>')
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 355" role="img" aria-label="Quan sát và dự báo trước một giờ">'+''.join(parts)+'</svg>'
+    for hour in (0,4,8,12,16,20,23):
+        parts.append(f'<text class="tick" x="{xy(hour,lo)[0]:.1f}" y="{bottom+25}" text-anchor="middle">{hour:02d}:00</text>')
+    for x, (_, color, label) in zip((112, 282), fields):
+        parts.append(f'<path d="M {x} {bottom+79} h 26" stroke="{color}" stroke-width="3"/>')
+        parts.append(f'<text x="{x+33}" y="{bottom+84}">{label}</text>')
+    return svg(1080, bottom + 100, 'Quan sát và dự báo trước một giờ', parts)
 
 
 def main():

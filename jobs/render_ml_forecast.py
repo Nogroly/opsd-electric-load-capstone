@@ -3,8 +3,10 @@ import csv
 import hashlib
 import html
 import json
-from datetime import datetime, timezone
+import math
 from pathlib import Path
+
+from chart_svg import axes, number as num, svg
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'outputs/ml_forecast'
@@ -18,43 +20,49 @@ def read_csv(name):
         return list(csv.DictReader(handle))
 
 
-def num(value):
-    return f'{float(value):,.2f}'.replace(',', '_').replace('.', ',').replace('_', '.')
-
-
 def bars(rows, split):
     selected={r['model']:r for r in rows if r['split']==split and r['period']=='all'}
-    high=max(float(r['mae_mw']) for r in selected.values())*1.18
-    shapes=[]
+    high = max(500, math.ceil(max(float(r['mae_mw']) for r in selected.values()) * 1.15 / 500) * 500)
+    left, top, width, height = 112, 24, 925, 235
+    bottom = top + height
+    shapes = axes(left, top, width, height, 0, high, 500, 'Phương pháp dự báo', 'MAE (MW)')
     for i,name in enumerate(LABELS):
-        v=float(selected[name]['mae_mw']); x=105+i*325; y=325-v/high*260
-        shapes.append(f'<rect x="{x}" y="{y:.1f}" width="130" height="{325-y:.1f}" fill="{COLORS[name]}"><title>{ESC(LABELS[name])}: {num(v)} MW</title></rect>')
-        shapes.append(f'<text x="{x+65}" y="{y-9:.1f}" text-anchor="middle">{num(v)}</text>')
-        shapes.append(f'<text x="{x+65}" y="350" text-anchor="middle">{ESC(LABELS[name])}</text>')
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 375" role="img" aria-label="MAE ba phương pháp"><style>text{font:16px Arial;fill:#334b61}</style><text x="15" y="30">MAE (MW), thấp hơn là tốt hơn</text>'+''.join(shapes)+'</svg>'
+        v = float(selected[name]['mae_mw'])
+        x = left + (i + .5) * width / len(LABELS)
+        y = bottom - v * height / high
+        shapes.append(f'<rect x="{x-65:.1f}" y="{y:.1f}" width="130" height="{bottom-y:.1f}" '
+                      f'fill="{COLORS[name]}"><title>{ESC(LABELS[name])} · {num(v)} MW</title></rect>')
+        shapes.append(f'<text x="{x:.1f}" y="{y-9:.1f}" text-anchor="middle">{num(v)}</text>')
+        shapes.append(f'<text x="{x:.1f}" y="{bottom+25}" text-anchor="middle">{ESC(LABELS[name])}</text>')
+    return svg(1080, bottom + 72, 'MAE của ba phương pháp dự báo', shapes)
 
 
 def comparison_line(predictions):
     rows=[r for r in predictions if '2019-10-01'<=r['target_utc']<'2019-10-08']
     if len(rows)!=168:
         raise ValueError('Fixed first test week is not complete')
-    fields=[('actual_mw','#20344f',2.5),('random_forest_mw','#047f9b',2),
-            ('last_hour_mw','#d47933',1.2)]
-    values=[float(r[f]) for r in rows for f,_,_ in fields]
-    low=min(values)-1500; high=max(values)+1500
-    xy=lambda i,v:(70+i*960/167,30+(high-v)*280/(high-low))
-    elements=[]
-    for field,color,width in fields:
+    fields=[('actual_mw','#20344f',2.5,'Thực tế'),('random_forest_mw','#047f9b',2,'Random Forest'),
+            ('last_hour_mw','#d47933',1.2,'Giờ gần nhất')]
+    values = [float(r[f]) for r in rows for f, _, _, _ in fields]
+    low = math.floor(min(values) / 5000) * 5000
+    high = max(low + 5000, math.ceil(max(values) / 5000) * 5000)
+    left, top, width, height = 112, 25, 925, 248
+    bottom = top + height
+    xy = lambda i, v: (left + i * width / 167, top + (high - v) * height / (high - low))
+    elements = axes(left, top, width, height, low, high, 5000, 'Giờ cần dự báo (UTC)', 'Phụ tải (MW)')
+    for field,color,stroke,_ in fields:
         points=' '.join(f'{xy(i,float(r[field]))[0]:.1f},{xy(i,float(r[field]))[1]:.1f}' for i,r in enumerate(rows))
-        elements.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="{width}"/>')
+        elements.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="{stroke}"/>')
     for i,r in enumerate(rows):
         x,y=xy(i,float(r['actual_mw']))
         title=f"{r['target_utc']} UTC: thực tế {num(r['actual_mw'])}; RF {num(r['random_forest_mw'])}; giờ trước {num(r['last_hour_mw'])} MW"
         elements.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="5" fill="transparent"><title>{ESC(title)}</title></circle>')
     for day in range(7):
-        elements.append(f'<text x="{xy(day*24,low)[0]:.1f}" y="345" text-anchor="middle">{day+1:02d}/10</text>')
-    elements.append('<text x="65" y="375">Đen: thực tế</text><text x="300" y="375">Xanh: Random Forest</text><text x="620" y="375">Cam: giờ gần nhất</text>')
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 395" role="img" aria-label="Thực tế và dự báo tuần đầu test"><style>text{font:14px Arial;fill:#3c5267}</style><text x="8" y="20">MW</text>'+''.join(elements)+'</svg>'
+        elements.append(f'<text class="tick" x="{xy(day*24,low)[0]:.1f}" y="{bottom+25}" text-anchor="middle">{day+1:02d}/10</text>')
+    for x, (_, color, _, label) in zip((112, 268, 463), fields):
+        elements.append(f'<path d="M {x} {bottom+79} h 26" stroke="{color}" stroke-width="3"/>')
+        elements.append(f'<text x="{x+33}" y="{bottom+84}">{label}</text>')
+    return svg(1080, bottom + 100, 'Thực tế và dự báo tuần đầu test', elements)
 
 
 def main():
@@ -81,10 +89,10 @@ def main():
                      sorted(importance.items(),key=lambda pair:-pair[1]))
     css='body{margin:0;background:#eef3f7;color:#19344d;font:16px/1.6 system-ui,Arial}main{max-width:1140px;margin:auto;padding:30px 20px}header,section{background:white;border:1px solid #dce5ef;border-radius:16px;padding:24px;margin:18px 0}h1{font-size:34px;line-height:1.2}h2{font-size:23px}svg{width:100%;height:auto}p{color:#465d71}a{color:#006e83}li{margin:10px 0}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:8px;border-bottom:1px solid #dce5ef}.scroll{overflow:auto}.hero{font-size:21px;font-weight:700;color:#006c88}.note{background:#e9f8fc;padding:12px;border-radius:8px}small{color:#60788a}@media(max-width:600px){main{padding:10px}header,section{padding:12px}}'
     page=f'<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OPSD · Random Forest</title><style>{css}</style><main><header><h1>Random Forest dự báo phụ tải giờ tiếp theo</h1><p>Đức 2019 · dữ liệu Parquet từ HDFS · cùng 720 giờ validation và 2.208 giờ test với hai baseline.</p><p class="hero">MAE test: {num(rf["mae_mw"])} MW; thấp hơn {LABELS[best_baseline["model"]]} {num(improvement)}% trên tập test này.</p><small>Run ID {ESC(summary["run_id"])}</small></header>'
-    page+='<section><h2>Chọn mô hình bằng tháng 9</h2><p>Chỉ so hai cấu hình Random Forest trên validation. Tháng 10–12 được giữ riêng để đánh giá cuối; hai baseline dùng cùng mốc dự báo.</p>'+val_chart+'</section>'
-    page+='<section><h2>Đánh giá tháng 10–12</h2>'+test_chart+'<p>MAE và RMSE dùng đơn vị MW; thấp hơn là sai số nhỏ hơn. Kết quả không chứng minh mô hình sẽ tốt hơn ở năm khác hoặc khi số đo đến trễ.</p><a href="metrics.csv">Bảng chỉ số</a> · <a href="test_mae.svg">Biểu đồ SVG</a></section>'
+    page+='<section><h2>So sánh ba cách dự báo trên 2.208 giờ test</h2>'+test_chart+'<p>Bộ test gồm tháng 10–12/2019. MAE là trung bình trị tuyệt đối sai số theo giờ, đơn vị MW. Giá trị thấp hơn là sai số nhỏ hơn.</p><a href="metrics.csv">Bảng chỉ số</a> · <a href="test_mae.svg">Biểu đồ SVG</a></section>'
     page+='<section><h2>Tuần đầu test: thực tế và dự báo</h2>'+line+'<p>Mỗi điểm dự báo trước một giờ; trước mỗi giờ, lịch sử được cập nhật bằng số đo thực tế đã xảy ra. Di chuột vào đồ thị để xem giá trị.</p><a href="predictions.csv">Toàn bộ dự báo</a> · <a href="test_first_week.svg">Biểu đồ SVG</a></section>'
     page+='<section><h2>MAE theo từng tháng test</h2><div class="scroll"><table><tr><th>Tháng</th><th>Random Forest</th><th>Giờ gần nhất</th><th>168 giờ trước</th></tr>'+monthly+'</table></div></section>'
+    page+='<section><h2>Chọn cấu hình bằng tháng 9</h2><p>So hai cấu hình Random Forest trên tháng 9. Hai baseline dùng cùng mốc dự báo ở từng tập.</p>'+val_chart+'</section>'
     page+='<section><h2>Đầu vào mô hình</h2><p>Chỉ sử dụng phụ tải tại 1, 24 và 168 giờ trước, cộng giờ và thứ UTC của mục tiêu. Đây là hồi quy trên biến liên tục MW, không phải phân loại hoặc LLM.</p><table><tr><th>Đặc trưng</th><th>Độ quan trọng trong mô hình</th></tr>'+features+'</table><p>Độ quan trọng do Random Forest tính cho tập huấn luyện; không chứng minh quan hệ nhân quả.</p></section>'
     page+='<section><h2>Giới hạn và khả năng kiểm tra</h2><p class="note">Huấn luyện tháng 1–8 (5.664 giờ có đủ lag), chọn cấu hình tháng 9, test tháng 10–12. Dùng quan sát thực tế của các giờ đã qua; giả định số đo t−1h sẵn có tại mốc dự báo. Chưa mô phỏng độ trễ công bố, chưa đánh giá năm khác.</p><p>Đã đối chiếu 2.928 mục tiêu và hai baseline với kết quả Plan A, tính lại 15 dòng chỉ số độc lập từ CSV.</p><a href="verification.json">Kiểm tra độc lập</a> · <a href="summary.json">Thông tin lần chạy</a></section></main></html>'
     (OUT/'index.html').write_text(page,encoding='utf-8')

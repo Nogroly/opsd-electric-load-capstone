@@ -1,66 +1,158 @@
-# Project 4 — Phân tích và dự báo phụ tải điện Đức
+# Project 4 Phân tích và dự báo phụ tải điện Đức
 
-**Đọc trong 3 phút:** Đề tài dùng [OPSD Time series 2020-10-06](https://data.open-power-system-data.org/time_series/2020-10-06/) để dựng một pipeline có thể kiểm tra lại: 50.401 dòng CSV nguồn → chọn phụ tải thực tế Đức năm 2019 → **8.760 giờ** trên HDFS/Parquet → phân tích xu hướng và dự báo trước 1 giờ → phát lại 24 giờ lịch sử bằng Spark Structured Streaming. Đơn vị phụ tải là **MW**. Đây là capstone trên **một máy**, không phải hệ thống nhận số đo điện trực tiếp.
+Demo chạy tuần tự **Plan A → Plan B → Plan C** trong PowerShell. Mỗi lệnh tạo kết quả, kiểm định rồi mở dashboard để trình bày trước khi chuyển sang phần tiếp theo.
 
-```text
-OPSD CSV (utc_timestamp, DE_load_actual_entsoe_transparency)
-  └─ PySpark ETL → HDFS/Parquet (Đức 2019, 8.760 giờ) → 8 nhóm kiểm định
-       ├─ Plan A: Spark SQL → bảng ngày/tháng/giờ → dashboard
-       ├─ Plan B: MA7/MA30 + nhiệt đồ → dashboard xu hướng
-       ├─ Plan B: Spark ML Random Forest + 2 baseline → MAE/RMSE → dashboard
-       └─ Plan C: JSON replay 24 giờ → Structured Streaming → HDFS/checkpoint → dashboard
+- **Plan A** xử lý CSV, ghi và kiểm định Parquet trên HDFS, phân tích phụ tải theo giờ, tháng, nhóm ngày, MA7/MA30 và nhiệt đồ.
+- **Plan B** dự báo trước một giờ bằng Random Forest và so sánh với hai baseline trên cùng tập test.
+- **Plan C** phát lại 24 giờ lịch sử thành JSON theo đợt, dùng mô hình Plan B để dự báo và kiểm tra checkpoint, dữ liệu trùng.
+
+## Chuẩn bị trước buổi demo
+
+Cần Docker Desktop đang chạy Linux containers, Docker Compose và PowerShell. Spark và Python chạy trong container. Docker Compose gắn thư mục dự án vào /workspace.
+
+Mở PowerShell tại thư mục chứa README này và kiểm tra môi trường.
+
+```powershell
+docker version
+docker compose version
+docker compose up -d
+docker compose ps
 ```
 
-## Kết quả đã kiểm chứng (lượt chạy 14/11/2026)
+Ba dịch vụ của dự án là namenode, datanode và spark. Chờ NameNode báo healthy.
 
-| Phần | Bằng chứng | Kết quả |
-|---|---|---|
-| Plan A | `outputs/quality/quality_summary.json`, `outputs/analytics/verification.json` | 8.760 giờ liên tục; 8/8 nhóm kiểm định đạt; CSV–Parquet không lệch hàng. |
-| Plan B xu hướng | `outputs/trends/verification.json` | MA30 cao 62.917,75 MW ngày 07/02, thấp 51.446,43 MW ngày 25/08. |
-| Plan B dự báo | `outputs/ml_forecast/metrics.csv`, `demo_verify_mae.ps1` | Random Forest MAE test 1.135,29 MW trên 2.208 giờ; baseline giờ trước 1.977,92 MW; giảm 42,60%. |
-| Plan C | `outputs/streaming/checks.json` | 25 JSON đọc, 24 giờ duy nhất; restart và file trùng đều +0 hàng. |
-
-Các nhánh hiện cùng ETL run ID; Plan C dùng đúng ML run của lần chạy này. `./demo_preflight.ps1` xác nhận trạng thái, lineage và Docker. Bản tóm tắt để thầy nhận xét ở [docs/01_bao_cao_gui_thay.md](docs/01_bao_cao_gui_thay.md); bản giải thích toàn bộ kỹ thuật ở [docs/02_ky_thuat_cho_vinh.md](docs/02_ky_thuat_cho_vinh.md).
-
-## Xem kết quả nhanh, không cần chạy lại
-
-Xem ngay trên GitHub bốn ảnh dashboard: [Plan A](outputs/analytics/dashboard-preview.png) · [xu hướng](outputs/trends/dashboard-preview.png) · [ML](outputs/ml_forecast/dashboard-preview.png) · [streaming](outputs/streaming/dashboard-preview.png). Nếu muốn tương tác, tải repo và mở bốn file `index.html` tương ứng trên máy; GitHub hiển thị mã HTML khi bấm trực tiếp. Đọc [docs/03_demo_7_phut.md](docs/03_demo_7_phut.md) để biết phải chỉ vào đâu và nói gì. [Slide Canva chỉnh sửa](https://www.canva.com/d/38WkXqBjUBGzYt6) gồm 11 trang; slide 5 là sơ đồ khối, slide 6 là xu hướng, 8–9 là dự báo, 10 là streaming. [Hướng dẫn rà từng slide](docs/05_slide_content_review.md) dành cho bạn nhóm.
-
-[Trang mở slide cho thầy và nhóm](slides/README.md) có cả link xem và link chỉnh sửa; Canva cần cấp quyền riêng.
-
-## Chạy lại từ đầu trên Windows
-
-Yêu cầu: Docker Desktop đang chạy ở Linux containers, Docker Compose, PowerShell, internet để tải CSV và image. Từ thư mục repo:
+Tải dữ liệu trước giờ demo nếu máy chưa có CSV.
 
 ```powershell
 .\download_opsd.ps1
-.\run_plan_a.ps1 -NoOpen
-.\run_forecast.ps1 -NoOpen
-.\run_plan_b.ps1 -NoOpen
-.\run_plan_c.ps1 -NoOpen
-.\demo_preflight.ps1
+```
+
+Script tải CSV OPSD phiên bản 06/10/2020 và đối chiếu kích thước cùng SHA-256 với metadata. File nguồn 130.339.665 byte được lưu ở data/raw/time_series_60min_singleindex.csv. Máy đã có CSV hợp lệ chỉ cần kiểm tra lại bằng lệnh trên. [Nguồn OPSD](https://data.open-power-system-data.org/time_series/2020-10-06/)
+
+## 1 Chạy Plan A và trình bày dữ liệu cùng phân tích
+
+```powershell
+.\run_plan_a.ps1
+```
+
+Đợi PLAN A COMPLETED rồi xem dashboard tự mở.
+
+| Nhãn terminal | Công việc và kết quả |
+|---|---|
+| A0/6 | Khởi động Docker Compose. |
+| A1/6 | Chọn hai cột giờ UTC và phụ tải thực tế Đức, lọc năm 2019, ghi Parquet lên HDFS. |
+| A2/6 | Đọc lại HDFS, kiểm định dữ liệu và tính các bảng Spark SQL. |
+| A3/6 | Đối chiếu các bảng tổng hợp với CSV nguồn. |
+| A4/6 | Tính MA7/MA30, nhiệt đồ theo thứ và giờ, tháng và giờ. |
+| A5/6 | Kiểm tra cửa sổ trượt và các nhóm tổng hợp. |
+| A6/6 | Dựng dashboard HTML từ kết quả đã kiểm định. |
+
+Mở [dashboard Plan A](outputs/trends/index.html). Trình bày trung bình theo giờ, tháng, ngày thường/cuối tuần và MA7/MA30. Có nút nhảy đến từng biểu đồ ở đầu trang. Các bảng SQL và biểu đồ riêng nằm ở [outputs/analytics](outputs/analytics/).
+
+Kết quả đối chiếu gồm 8.760 giờ, 8/8 nhóm kiểm định đạt và 0 dòng khác biệt CSV–Parquet theo cả hai chiều. Trung bình cuối tuần thấp hơn 18,14% so với ngày thường trong mẫu 2019. Biểu đồ tháng dùng UTC, còn giờ và nhóm ngày dùng Europe/Berlin. Đơn vị phụ tải là MW.
+
+## 2 Chạy Plan B và so sánh dự báo
+
+```powershell
+.\run_plan_b.ps1
+```
+
+Plan B đọc Parquet của Plan A. Lệnh tự tạo và kiểm tra hai baseline trước khi huấn luyện Random Forest.
+
+| Nhãn terminal | Công việc và kết quả |
+|---|---|
+| B0/5 | Kiểm tra môi trường Docker. |
+| B1/5 | Tạo hai dự báo baseline từ giờ gần nhất và đúng 168 giờ trước. |
+| B2/5 | Đối chiếu mốc giờ, dự báo và sai số baseline với CSV nguồn. |
+| B3/5 | Huấn luyện Random Forest và so sánh ba phương pháp trên cùng giờ mục tiêu. |
+| B4/5 | Kiểm tra độc lập các dự báo và chỉ số. |
+| B5/5 | Dựng dashboard so sánh ba phương pháp. |
+
+Đợi PLAN B COMPLETED rồi xem [dashboard Plan B](outputs/ml_forecast/index.html).
+
+| Phương pháp | MAE test (MW) |
+|---|---:|
+| Random Forest | 1.135,29 |
+| Giờ gần nhất | 1.977,92 |
+| Cùng giờ 168 giờ trước | 2.897,08 |
+
+Huấn luyện dùng tháng 1–8, chọn cấu hình bằng tháng 9, test tháng 10–12. Tập test có 2.208 giờ. MAE là trung bình trị tuyệt đối sai số, cùng đơn vị MW. Random Forest giảm MAE 42,60% so với baseline giờ gần nhất trên tập test này. Mô hình giả định số đo giờ trước đã sẵn có.
+
+Có thể tính lại MAE ngay khi trình bày.
+
+```powershell
 .\demo_verify_mae.ps1
 ```
 
-**Đợi mỗi lệnh có `COMPLETED` rồi mới sang lệnh sau.** Tệp CSV 130.339.665 byte không nằm trong GitHub; `download_opsd.ps1` lấy từ OPSD và đối chiếu SHA-256 với metadata. Docker Compose tạo NameNode, DataNode, Spark; dữ liệu HDFS nằm trong Docker volume của máy chạy, nên bản clone phải chạy Plan A trước khi đọc HDFS. `outputs/` trong repo là **snapshot minh chứng** để đọc ngay, không tự chứng minh container trên máy khác đã chạy.
+## 3 Chạy Plan C và quan sát dữ liệu đến theo đợt
 
-## Giới hạn và lý do chọn công nghệ
+```powershell
+.\run_plan_c.ps1
+```
 
-Spark thống nhất ETL, SQL, ML và Structured Streaming; HDFS/Parquet cho tập đã chuẩn hóa có schema, đọc lại được. Docker Compose giúp dựng môi trường ba dịch vụ trên một máy. Tập 8.760 giờ riêng Đức vẫn có thể xử lý bằng pandas; lựa chọn Spark/HDFS nhằm học và minh họa kiến trúc, **không khẳng định tốc độ hoặc chịu lỗi nhiều máy**. JSON replay đủ để kiểm tra microbatch/checkpoint; chưa cần Kafka khi chưa có nguồn sự kiện thật. Random Forest là machine learning hồi quy, không phải LLM. Mô hình giả định số đo giờ trước đã sẵn có, chưa tính độ trễ công bố; chưa có thời tiết, ngày lễ hay dữ liệu nhiều năm để kết luận tổng quát.
+Plan C lấy 24 giờ ngày 01/10/2019 từ dữ liệu Plan A và nạp mô hình vừa tạo ở Plan B. Mỗi lượt có ID, thư mục JSON, HDFS đầu ra và checkpoint riêng.
 
-## Bản đồ repo và cách cộng tác
-
-| Thư mục/file | Ý nghĩa |
+| Nhãn terminal | Công việc và kết quả |
 |---|---|
-| `jobs/`, `sql/`, `tests/` | ETL, phân tích, dự báo, streaming và kiểm tra độc lập. |
-| `run_plan_*.ps1`, `run_forecast.ps1` | Lệnh điều phối; các nhãn `[A…]`, `[1/6]`, `[1/8]` giúp đọc terminal. |
-| `outputs/` | Kết quả snapshot đã kiểm định và dashboard HTML. |
-| `data/metadata/` | Metadata nguồn; `data/raw/` được tải riêng. |
-| `docs/` | Báo cáo gửi thầy, bản học kỹ thuật, kịch bản demo, nội dung slide, lịch tập. |
-| `assets/slide/` | Hình biểu đồ và minh họa để chỉnh Canva. |
+| C0/8 | Kiểm tra môi trường Docker. |
+| C1/8 | Chuẩn bị 24 giờ lịch sử để phát lại. |
+| C2/8 → C4/8 | Phát và xử lý lần lượt 8 → 16 → 24 giờ. Dashboard cập nhật sau từng đợt. |
+| C5/8 | Khởi động lại query với cùng checkpoint và kiểm tra số hàng. |
+| C6/8 | Gửi thêm một file chứa mốc giờ trùng, xử lý và kiểm tra đầu ra. |
+| C7/8 | Đối chiếu nguồn, HDFS và dự báo qua các giai đoạn. |
+| C8/8 | Dựng dashboard cuối cùng và báo cáo. |
 
-**Bạn nhóm chỉnh slide và Docs:** ưu tiên độ đọc rõ, trật tự kể chuyện, caption và logo công nghệ. Có thể đề xuất sửa câu chữ trong `docs/05_slide_content_review.md`. Trước khi đổi số, đối chiếu `outputs/` và ghi nguồn ngay trên slide. Giữ rõ ba mức: kết quả thực đã làm; giới hạn; ý tưởng sau này. Không gọi replay lịch sử là dữ liệu trực tiếp hay gọi MA30 là AI dự báo.
+[Dashboard Plan C](outputs/streaming/index.html) tự mở sau đợt đầu có 8 giờ. Giữ trang mở để quan sát cập nhật. Đợi PLAN C COMPLETED để kết luận toàn bộ phép thử đã đạt.
 
-Repo **Public** tại [GitHub](https://github.com/Nogroly/opsd-electric-load-capstone). Thầy và bạn nhóm mở link để đọc ngay; bạn nhóm cần được mời làm cộng tác viên nếu muốn sửa trong repo. Slide Canva có quyền truy cập riêng. Xem [cách bàn giao](docs/00_access_and_handoff.md).
+Kết quả kỳ vọng là 25 JSON được đọc, 24 giờ duy nhất trên HDFS, chạy lại thêm 0 hàng và file trùng thêm 0 hàng. Đây là replay dữ liệu lịch sử. Mô hình được huấn luyện trong Plan B rồi nạp vào luồng để dự báo.
 
-**Khi cần góp ý:** tạo issue/nhận xét trong repo với số slide, câu đang có, câu đề xuất và lý do. Đừng sửa kết quả kiểm định hoặc chỉ số mô hình chỉ để slide đẹp hơn.
+## 4 Kiểm tra sau cả ba phần
+
+```powershell
+.\demo_preflight.ps1
+```
+
+EVIDENCE PREFLIGHT PASSED xác nhận trạng thái kiểm định và quan hệ giữa các lượt ETL, baseline, ML và replay. Nếu chạy lại Plan A, tiếp tục chạy B rồi C để tạo lại đầy đủ các đầu ra phụ thuộc. Nếu chỉ chạy lại B, chạy tiếp C để dùng mô hình mới.
+
+Dừng ở lỗi đầu tiên và đọc nhãn A/B/C cùng thông báo lỗi. Các dòng INFO, Stage và Task thể hiện Spark đang làm việc. Dòng COMPLETED chỉ xuất hiện sau khi phần tương ứng đã chạy xong.
+
+## Tùy chọn và thời gian demo
+
+- Mỗi script hỗ trợ -NoOpen để tự mở dashboard khi cần.
+- Plan A hỗ trợ -SkipEtl khi muốn dùng lại tập Parquet đã có. Khi demo toàn tuyến từ CSV, dùng lệnh mặc định.
+- Script run_forecast.ps1 vẫn có thể tạo báo cáo baseline riêng khi cần xem chi tiết. Luồng demo dùng run_plan_b.ps1 để thực hiện baseline và Random Forest trong một phần.
+- demo_preflight.ps1 -CoreOnly kiểm tra A/B khi C chưa chạy. Sau C, dùng demo_preflight.ps1 đầy đủ.
+
+Một lượt kiểm thử đã đo khoảng 3 phút cho A, 2,5 phút cho B và 5 phút cho C. Thời gian phụ thuộc máy và trạng thái Docker. Khi tập demo trực tiếp, bấm giờ cả thời gian chạy lẫn phần nói.
+
+## Tài liệu và nơi xem kết quả
+
+- [Kịch bản Google Docs để luyện thuyết trình](https://docs.google.com/document/d/1W0B1vqy_RHZutBpG6PW8aYRtPcKkjLEr97Jh2CLzP5c/edit).
+- [Kịch bản thuyết trình slide và demo trong PowerShell của Antigravity](DEMO_SLIDE_POWERSHELL.md).
+- [Kịch bản chạy demo A → B → C](DEMO_A_B_C.md).
+- [Hướng dẫn sửa slide và chụp minh chứng](reporting/2026-11-17/HUONG_DAN_SUA_SLIDE_VA_CHUP_MINH_CHUNG.md).
+- [Báo cáo Google Docs](https://docs.google.com/document/d/1JPeIrLZtFNuXXrQxdubIThnghMXupaitLNkaSWNu2bE/edit).
+- [Hướng dẫn rà soát trình bày cho bạn nhóm](https://docs.google.com/document/d/1Q9NJk-jVPCWEgocmiJH9FYozz76K93Agmk5yzDMWB8k/edit).
+- Ảnh xem ngay trên GitHub gồm [Plan A](outputs/trends/dashboard-preview.png), [Plan B](outputs/ml_forecast/dashboard-preview.png) và [Plan C](outputs/streaming/dashboard-preview.png). Để dùng dashboard tương tác, tải repo và mở file HTML trên máy.
+- jobs/ chứa ETL, kiểm định, SQL, ML, replay và dựng dashboard.
+- sql/ chứa truy vấn tổng hợp, tests/ chứa đối chiếu độc lập.
+- outputs/quality, analytics, trends, forecast, ml_forecast và streaming chứa kết quả từng phần.
+- reporting/ lưu tài liệu chuẩn bị theo ngày. Dùng README và DEMO_A_B_C.md cho thứ tự chạy hiện tại.
+- docs/ giữ tài liệu từ những lượt chuẩn bị trước. Kịch bản slide và PowerShell ở đầu danh sách tài liệu dùng cho demo A → B → C hiện tại.
+
+## Môi trường kỹ thuật
+
+| Thành phần | Cấu hình |
+|---|---|
+| Spark | apache/spark:3.5.3-java17-python3, local[2] |
+| HDFS | apache/hadoop:3.3.6, một NameNode và một DataNode |
+| Lưu trữ | Parquet trên HDFS, replication 1 |
+| Mạng và dữ liệu | Docker Compose, thư mục dự án gắn vào /workspace, HDFS lưu trong Docker volumes |
+
+Giao diện HDFS ở http://localhost:9870. Spark UI ở http://localhost:4040 trong lúc job đang chạy.
+
+Dừng dịch vụ sau khi demo bằng lệnh dưới. Docker volumes giữ dữ liệu HDFS để dùng lại.
+
+```powershell
+docker compose stop
+```
