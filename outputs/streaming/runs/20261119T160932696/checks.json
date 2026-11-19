@@ -1,0 +1,18 @@
+{
+  "status": "PASSED",
+  "run_id": "20261119T160932696",
+  "emitted_json_files": 25,
+  "spark_input_rows": 25,
+  "unique_hdfs_rows": 24,
+  "forecast_comparisons": 24,
+  "restart_added_rows": 0,
+  "duplicate_added_rows": 0,
+  "hdfs_rows_unchanged_after_restart_and_duplicate": true,
+  "checks": [
+    "three progressive stages",
+    "source vs HDFS rows",
+    "stream predictions vs offline ML",
+    "checkpoint restart",
+    "duplicate timestamp after restart"
+  ]
+}

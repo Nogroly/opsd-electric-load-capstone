@@ -48,7 +48,7 @@ Khi thấy `EVIDENCE PREFLIGHT PASSED` và `MAE CROSS-CHECK PASSED`, bạn có t
 
 ### Slide 7 và 9 Đặt biểu đồ vào Canva
 
-- **Slide 7.** Dùng `outputs\trends\daily_trend.svg` hoặc ảnh chụp cùng tên biểu đồ trên dashboard. Giữ trục **Phụ tải trung bình (MW)**, trục **Ngày kết thúc cửa sổ (UTC)** và chú giải MA7/MA30. Nếu dùng hình hai cột, lấy `outputs\analytics\day_type.svg` và giữ trục tung từ 0 MW. Nếu trang đã có nhiệt đồ, có thể giữ hình đó và thêm một thẻ chữ **−18,14% vào cuối tuần**. Nhiệt đồ cần giữ nhãn giờ Đức và thang màu MW.
+- **Slide 7.** Dùng bản mới `outputs\trends\daily_trend.svg` sau góp ý 19/11: trung bình ngày màu xám, MA7 xanh và MA30 cam trên cùng trục. Giữ trục **Phụ tải trung bình (MW)**, trục **Ngày UTC / ngày kết thúc cửa sổ MA** và đủ ba chú giải để thấy tác dụng làm mượt. Nếu dùng hình hai cột, lấy `outputs\analytics\day_type.svg` và giữ trục tung từ 0 MW. Nếu trang đã có nhiệt đồ, có thể giữ hình đó và thêm một thẻ chữ **−18,14% vào cuối tuần**. Nhiệt đồ cần giữ nhãn giờ Đức và thang màu MW.
 - **Slide 9.** Dùng `outputs\ml_forecast\test_mae.svg` hoặc chụp riêng mục “So sánh ba cách dự báo trên 2.208 giờ test”. Giữ trục **MAE (MW)** từ 0 và trục **Phương pháp dự báo**, tên và số trên từng cột. Khi nói, giải thích MAE là sai số tuyệt đối trung bình.
 - Giữ màu MA30 và màu Random Forest nhất quán giữa dashboard, slide và bài nói. Chiếu thử ở chế độ toàn màn hình để kiểm tra nhãn và số ngày.
 
@@ -59,7 +59,7 @@ Lưu PNG vào một thư mục riêng trong `evidence` để dễ tìm. Với �
 | Tệp ảnh | Thao tác lấy ảnh | Đặt ở đâu |
 |---|---|---|
 | **01_so_do_khoi.png** | Trong Canva, xuất **riêng slide 5 sau khi sửa** ở định dạng PNG. Cắt gọn quanh khối, mũi tên và chú giải Plan C. | **Hình 1, trang 1 Word.** |
-| **02_ma7_ma30.png** | Mở `outputs\trends\index.html`, bấm **MA7 và MA30** rồi chụp biểu đồ. Giữ tên hai trục, mốc tháng và chú giải hai đường. Nếu ảnh đã chụp trước khi có tên trục, hãy chụp lại ảnh này. | **Hình 2, trang 2 Word.** Dùng lại cho slide 7. |
+| **02_ma7_ma30.png** | Mở `outputs\trends\index.html`, bấm **MA7 và MA30** rồi chụp biểu đồ mới gồm trung bình ngày, MA7 và MA30. Giữ tên hai trục, mốc tháng và đủ ba chú giải. Thay ảnh cũ hai đường trong báo cáo/slide. | **Hình 2, trang 2 Word.** Dùng lại cho slide xu hướng. |
 | **03_hdfs_qa.png** | Chạy lệnh đọc lại hoặc lệnh tóm tắt kiểm định ở dưới. Ảnh đọc lại cần thấy **8760**, hai mốc UTC và **PASSED**. Ảnh tóm tắt cần thấy **8/8**, **8760** và **PASSED**. | **Slide 6** hoặc lưu dự phòng để thầy xem thêm. |
 | **04_nhiet_do_thu_gio.png** | Bấm **Nhiệt đồ** trên dashboard Plan A. Giữ các nhãn thứ, giờ, thang màu MW và dòng nhận định. | **Slide 7** nếu dùng nhiệt đồ hoặc lưu cho hỏi đáp. |
 | **05_mae_test.png** | Chụp mục so sánh 2.208 giờ trong dashboard dự báo. Nếu muốn kèm phép tính, chụp riêng phần cuối sau khi chạy `.\demo_verify_mae.ps1`. | **Slide 9** hoặc minh chứng nói về MAE. Bản Word đã có bảng số liệu. |

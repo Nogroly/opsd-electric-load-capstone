@@ -99,7 +99,7 @@ Giải thích mỗi hình bằng thứ tự trục, cách tổng hợp, kết qu
 - Bấm Theo giờ. “Trục ngang là nhãn giờ Đức 00–23, trục tung là phụ tải trung bình MW. Mỗi cột gom cùng nhãn giờ trong mẫu. 11h cao nhất khoảng 64.120 MW. Mẫu theo giờ giúp chọn khung thời gian cần theo dõi.”
 - Bấm Theo tháng. “Các tháng được nhóm theo UTC. Tháng 01 cao nhất khoảng 61.597 MW, tháng 08 thấp nhất khoảng 52.172 MW. Đây là biến động quan sát được trong năm 2019.”
 - Bấm Ngày thường và cuối tuần. “Hai cột là trung bình trên số đo theo giờ của từng nhóm thứ. Cuối tuần là 48.330 MW, thấp hơn 18,14% so với ngày thường 59.043 MW. Nhóm chưa tách ngày lễ.”
-- Bấm MA7 và MA30. “Trục ngang là ngày kết thúc cửa sổ UTC, trục tung là MW. MA7 lấy trung bình 7 ngày đã qua, MA30 lấy 30 ngày. Cửa sổ MA30 cao nhất kết thúc ngày 07/02, thấp nhất ngày 25/08.”
+- Bấm MA7 và MA30. “Đường xám là trung bình từng ngày UTC; đường xanh MA7 và đường cam MA30 làm mượt dao động ngày để thấy xu hướng. Trục ngang là ngày UTC/ngày kết thúc cửa sổ, trục tung là MW. MA7 lấy trung bình 7 ngày đã quan sát, MA30 lấy 30 ngày, gồm ngày đang xét. MA30 mượt hơn nhưng phản ứng chậm hơn; đây chưa phải dự báo. Cửa sổ MA30 cao nhất kết thúc ngày 07/02, thấp nhất ngày 25/08.”
 - Nếu dùng nhiệt đồ, chỉ một ô và thang màu. “Hàng là thứ, cột là giờ Đức. Màu thể hiện MW trung bình. Thứ Tư 11h có mức khoảng 68.639 MW, được tính trên nhiều tuần.”
 
 Khi thời gian hạn chế, dùng slide 7 để nói một câu về MA30 rồi chỉ trực tiếp biểu đồ cuối tuần. Các hình còn lại sẵn trên cùng dashboard để trả lời câu hỏi.

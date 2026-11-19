@@ -21,9 +21,10 @@ def read_csv(name):
 
 
 def trend_svg(daily):
-    left, top, width, height = 112, 25, 925, 248
+    left, top, width, height = 112, 25, 925, 320
     bottom = top + height
-    curves = [('ma7_mw', '#087eaa', 2.8), ('ma30_mw', '#e08b36', 3.2)]
+    curves = [('avg_mw', '#8999a8', 1.4),
+              ('ma7_mw', '#087eaa', 2.8), ('ma30_mw', '#e08b36', 3.2)]
     series = {
         field: [(i, float(row[field])) for i, row in enumerate(daily)
                 if row[field] not in ('', 'None')]
@@ -34,28 +35,33 @@ def trend_svg(daily):
     high = max(low + 5000, math.ceil(max(all_values) / 5000) * 5000)
     xy = lambda i, v: (left + i * width / (len(daily) - 1), top + (high - v) * height / (high - low))
     parts = axes(left, top, width, height, low, high, 5000,
-                 'Ngày kết thúc cửa sổ (UTC)', 'Phụ tải trung bình (MW)')
+                 'Ngày UTC / ngày kết thúc cửa sổ MA', 'Phụ tải trung bình (MW)')
     for field, color, stroke in curves:
         points = ' '.join(f'{xy(i,v)[0]:.1f},{xy(i,v)[1]:.1f}' for i, v in series[field])
-        parts.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="{stroke}"/>')
-    for i, v in series['ma7_mw']:
+        label = {'avg_mw': 'Trung bình ngày', 'ma7_mw': 'MA7', 'ma30_mw': 'MA30'}[field]
+        parts.append(f'<polyline aria-label="{label}" points="{points}" fill="none" stroke="{color}" stroke-width="{stroke}"/>')
+    for i, v in series['avg_mw']:
         row = daily[i]
+        ma7 = row['ma7_mw']
         ma30 = row['ma30_mw']
-        x, y = xy(i, float(ma30) if ma30 not in ('', 'None') else v)
+        x, y = xy(i, v)
+        ma7_text = f'{num(ma7)} MW' if ma7 not in ('', 'None') else 'chưa đủ 7 ngày'
         ma30_text = f'{num(ma30)} MW' if ma30 not in ('', 'None') else 'chưa đủ 30 ngày'
-        title = f"{row['day_utc']} · MA7 {num(v)} MW · MA30 {ma30_text}"
+        title = f"{row['day_utc']} · Trung bình ngày {num(v)} MW · MA7 {ma7_text} · MA30 {ma30_text}"
         parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="5" fill="transparent"><title>{ESC(title)}</title></circle>')
     for i, row in enumerate(daily):
         year, month, day = row['day_utc'].split('-')
         if day == '01':
             parts.append(f'<text class="tick" x="{xy(i,low)[0]:.1f}" y="{bottom+25}" text-anchor="middle">{month}/{year}</text>')
     parts.extend((
-        f'<path d="M 112 {bottom+79} h 26" stroke="#087eaa" stroke-width="3"/>',
-        f'<text x="145" y="{bottom+84}">MA7</text>',
-        f'<path d="M 225 {bottom+79} h 26" stroke="#e08b36" stroke-width="3"/>',
-        f'<text x="258" y="{bottom+84}">MA30</text>',
+        f'<path d="M 112 {bottom+79} h 26" stroke="#8999a8" stroke-width="1.4"/>',
+        f'<text x="145" y="{bottom+84}">Trung bình ngày</text>',
+        f'<path d="M 345 {bottom+79} h 26" stroke="#087eaa" stroke-width="3"/>',
+        f'<text x="378" y="{bottom+84}">MA7</text>',
+        f'<path d="M 480 {bottom+79} h 26" stroke="#e08b36" stroke-width="3"/>',
+        f'<text x="513" y="{bottom+84}">MA30</text>',
     ))
-    return svg(1080, bottom + 100, 'Trung bình trượt phụ tải trong 7 và 30 ngày', parts)
+    return svg(1080, bottom + 100, 'So sánh phụ tải trung bình ngày với MA7 và MA30', parts)
 
 
 def heatmap_svg(rows, group_field, groups, y_title, gradient_id, title, limits):
@@ -138,7 +144,7 @@ def main():
     css = 'body{margin:0;background:#eef3f7;color:#19344d;font:16px/1.6 system-ui,Arial}main{max-width:1140px;margin:auto;padding:30px 20px}header,section{background:white;border:1px solid #dce5ef;border-radius:16px;padding:24px;margin:18px 0}h1{font-size:34px;line-height:1.2}h2{font-size:23px}.chart-scroll{overflow-x:auto}svg{display:block;width:100%;min-width:640px;height:auto}p{color:#465d71}a{color:#006e83}nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:7px;border-bottom:1px solid #dce5ef}.scroll{overflow:auto}.note{background:#e9f8fc;padding:12px;border-radius:8px}small{color:#60788a}@media(max-width:600px){main{padding:10px}header,section{padding:12px}}'
     page = f'<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OPSD · Plan A</title><style>{css}</style><main><header><h1>Plan A · Phụ tải điện Đức năm 2019</h1><p>8.760 quan sát theo giờ · MW · nguồn Parquet trên HDFS · kiểm định độc lập đạt.</p><small>Run ID {ESC(summary["run_id"])}</small>'
     page += '<nav aria-label="Biểu đồ"><a href="#ma">MA7 và MA30</a><a href="#hourly">Theo giờ</a><a href="#monthly">Theo tháng</a><a href="#day_type">Ngày thường và cuối tuần</a><a href="#heatmap">Nhiệt đồ</a></nav></header>'
-    page += '<section id="ma"><h2>Trung bình trượt 7 và 30 ngày</h2><p>'+ESC(insights[0])+'</p><div class="chart-scroll">'+line+'</div><p>Mỗi điểm dùng 7 hoặc 30 ngày UTC đã quan sát. Thang dọc được thu hẹp để thấy độ biến động của hai đường.</p><a href="daily_trend.csv">Tải dữ liệu tính trung bình trượt</a> · <a href="daily_trend.svg">Biểu đồ SVG</a></section>'
+    page += '<section id="ma"><h2>Trung bình ngày và trung bình trượt 7, 30 ngày</h2><p>'+ESC(insights[0])+'</p><div class="chart-scroll">'+line+'</div><p class="note">Đường xám là trung bình 24 số đo phụ tải theo giờ của từng ngày UTC. MA7 (xanh) và MA30 (cam) lấy trung bình 7 hoặc 30 ngày đã quan sát, gồm ngày đang xét. Cửa sổ trượt làm mượt dao động ngày để thấy xu hướng; MA30 thường mượt hơn nhưng phản ứng chậm hơn MA7. Đây là mô tả lịch sử, không phải dự báo.</p><p>Ví dụ: MA7 ngày 07/01 dùng ngày 01–07/01; sang 08/01 bỏ ngày 01 và thêm ngày 08. Chưa đủ 7/30 ngày thì chưa vẽ MA tương ứng. Ba đường dùng chung trục MW; thang dọc không bắt đầu từ 0 để nhìn rõ biến động.</p><a href="daily_trend.csv">Tải trung bình ngày và MA7/MA30</a> · <a href="daily_trend.svg">Biểu đồ SVG</a></section>'
     page += period_sections(period_charts(tables), profiles, asset_path='../analytics/')
     page += '<section id="heatmap"><h2>Nhịp phụ tải theo thứ và giờ Đức</h2><p>'+ESC(insights[2])+'</p><div class="chart-scroll">'+heat+'</div><p>Đổi giờ mùa hè có thể làm số quan sát của các ô khác nhau. Di chuột vào ô để xem MW và cỡ mẫu.</p><a href="hour_week.csv">Bảng 168 ô</a> · <a href="hour_week.svg">Nhiệt đồ SVG</a></section>'
     page += '<section><h2>Nhịp theo tháng và giờ Đức</h2><div class="chart-scroll">'+month_heat+'</div><p>Nhóm tháng theo UTC và giờ trong ngày theo Europe/Berlin. Hai nhiệt đồ dùng chung thang màu MW.</p><a href="month_hour.csv">Bảng 288 ô</a> · <a href="month_hour.svg">Nhiệt đồ SVG</a></section>'
@@ -148,6 +154,7 @@ def main():
     report = '# Phân tích phụ tải Đức 2019\n\n'
     report += '\n\n'.join('- ' + text for text in (*profiles.values(), *insights))
     report += '\n\nPhạm vi 2019 UTC, giờ địa phương Europe/Berlin, đơn vị MW. Các kết quả mô tả mẫu một năm.\n'
+    report += '\nBiểu đồ daily_trend.svg đối chiếu trung bình ngày (24 số đo giờ UTC) với MA7/MA30 trên cùng trục MW. Cửa sổ trượt làm mượt dao động ngắn hạn, đồng thời có độ trễ; không phải dự báo tương lai.\n'
     (OUT/'report.md').write_text(report, encoding='utf-8')
     print('TREND DASHBOARD READY:', OUT/'index.html')
 

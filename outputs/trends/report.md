@@ -15,3 +15,5 @@
 - Bảng sai khác so từng giờ tháng 9–12 với mức trung bình của cùng thứ và giờ trong tháng 1–8. Chênh lệch lớn là tín hiệu cần xem xét, chưa đủ để gọi là lỗi dữ liệu hoặc xác định nguyên nhân.
 
 Phạm vi 2019 UTC, giờ địa phương Europe/Berlin, đơn vị MW. Các kết quả mô tả mẫu một năm.
+
+Biểu đồ daily_trend.svg đối chiếu trung bình ngày (24 số đo giờ UTC) với MA7/MA30 trên cùng trục MW. Cửa sổ trượt làm mượt dao động ngắn hạn, đồng thời có độ trễ; không phải dự báo tương lai.

@@ -1,0 +1,46 @@
+{
+  "run_id": "20261119T160932696",
+  "stage": "restart",
+  "ended_utc": "2026-11-19T16:13:11.495937+00:00",
+  "input_rows_this_launch": 0,
+  "microbatches": 1,
+  "source": "/workspace/data/replay_runs/20261119T160932696/input",
+  "hdfs_output": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261119T160932696/parquet",
+  "hdfs_checkpoint": "hdfs://namenode:8020/bigdata/opsd/stream_runs/20261119T160932696/checkpoint",
+  "progress": [
+    {
+      "id": "462757f8-422d-46a2-9e32-160a70f520bf",
+      "runId": "ed311f2c-05cf-4bbf-b03e-604a9a5f5248",
+      "name": null,
+      "timestamp": "2026-11-19T16:13:11.074Z",
+      "batchId": 6,
+      "numInputRows": 0,
+      "inputRowsPerSecond": 0.0,
+      "processedRowsPerSecond": 0.0,
+      "durationMs": {
+        "latestOffset": 3,
+        "triggerExecution": 363
+      },
+      "stateOperators": [],
+      "sources": [
+        {
+          "description": "FileStreamSource[file:/workspace/data/replay_runs/20261119T160932696/input]",
+          "startOffset": {
+            "logOffset": 5
+          },
+          "endOffset": {
+            "logOffset": 5
+          },
+          "latestOffset": null,
+          "numInputRows": 0,
+          "inputRowsPerSecond": 0.0,
+          "processedRowsPerSecond": 0.0
+        }
+      ],
+      "sink": {
+        "description": "FileSink[hdfs://namenode:8020/bigdata/opsd/stream_runs/20261119T160932696/parquet]",
+        "numOutputRows": -1
+      }
+    }
+  ]
+}

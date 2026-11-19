@@ -2,7 +2,7 @@
 **Đối tượng kiểm định:** Dữ liệu phụ tải thực tế CHLB Đức năm 2019 (OPSD DE 2019)  
 **Vị trí HDFS:** `hdfs://namenode:8020/bigdata/opsd/processed/de_2019`  
 **Tệp nguồn đối soát:** `/workspace/data/raw/time_series_60min_singleindex.csv`  
-**Thời gian thực thi:** 2026-11-18 15:27:43 UTC  
+**Thời gian thực thi:** 2026-11-19 15:32:48 UTC  
 **Trạng thái tổng thể:** **PASSED**  
 
 ---

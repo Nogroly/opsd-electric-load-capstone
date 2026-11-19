@@ -2,9 +2,19 @@
 
 Demo chạy tuần tự **Plan A → Plan B → Plan C** trong PowerShell. Mỗi lệnh tạo kết quả, kiểm định rồi mở dashboard để trình bày trước khi chuyển sang phần tiếp theo.
 
-- **Plan A** xử lý CSV, ghi và kiểm định Parquet trên HDFS, phân tích phụ tải theo giờ, tháng, nhóm ngày, MA7/MA30 và nhiệt đồ.
+- **Plan A** xử lý CSV, ghi và kiểm định Parquet trên HDFS, phân tích phụ tải theo giờ, tháng, nhóm ngày, đối chiếu trung bình ngày với MA7/MA30 để thấy tác dụng làm mượt, và nhiệt đồ.
 - **Plan B** dự báo trước một giờ bằng Random Forest và so sánh với hai baseline trên cùng tập test.
 - **Plan C** phát lại 24 giờ lịch sử thành JSON theo đợt, dùng mô hình Plan B để dự báo và kiểm tra checkpoint, dữ liệu trùng.
+
+## Cập nhật sau góp ý buổi báo cáo 19/11/2026
+
+Biểu đồ xu hướng Plan A đã có trung bình ngày (xám), MA7 (xanh) và MA30 (cam), cùng trục MW và ngày UTC để thấy tác dụng làm mượt. Không thay số liệu nguồn hoặc công thức cửa sổ. Đối chiếu 403 nhóm thống kê và 365 giá trị ngày/cửa sổ trượt đều đạt. Tháng 01/2019 có 744 giờ, trung bình 61.597,139785 MW từ CSV, khớp bảng SQL.
+
+- GROUP BY gom các giờ cùng tháng; AVG(load_mw) tính trung bình; ORDER BY month_utc mặc định tăng dần (ASC).
+- Hai baseline và RF được đánh giá trên cùng 2.208 giờ test. MAE RF 1.135,29 MW; giảm MAE 42,60% so với giờ gần nhất, không phải độ chính xác 42,60%.
+- [Tóm tắt workflow cho bạn nhóm](reporting/2026-11-19/01_TOM_TAT_WORKFLOW_VA_HUONG_DAN_BAO_CAO.md) và [góp ý đã xử lý, việc biên tập tiếp theo](reporting/2026-11-19/02_GOP_Y_THAY_VA_KET_QUA_CAP_NHAT.md).
+- [Xem nhanh biểu đồ ba đường mới](outputs/trends/dashboard-preview.png). Dashboard tương tác mở từ HTML sau khi tải repo; GitHub không chạy HTML trực tiếp.
+- Docs báo cáo và slide do nhóm tiếp tục chỉnh. Các tài liệu theo ngày trong reporting/ và docs/ giữ bối cảnh từng lần chuẩn bị; không tự coi bản Word cũ trong repo là bản biên tập cuối.
 
 ## Chuẩn bị trước buổi demo
 
@@ -132,13 +142,10 @@ Một lượt kiểm thử đã đo khoảng 3 phút cho A, 2,5 phút cho B và 
 - [Kịch bản chạy demo A → B → C](DEMO_A_B_C.md).
 - [Hướng dẫn sửa slide và chụp minh chứng](reporting/2026-11-17/HUONG_DAN_SUA_SLIDE_VA_CHUP_MINH_CHUNG.md).
 - [Báo cáo Google Docs](https://docs.google.com/document/d/1JPeIrLZtFNuXXrQxdubIThnghMXupaitLNkaSWNu2bE/edit).
-- [Hướng dẫn rà soát trình bày cho bạn nhóm](https://docs.google.com/document/d/1Q9NJk-jVPCWEgocmiJH9FYozz76K93Agmk5yzDMWB8k/edit).
-- Ảnh xem ngay trên GitHub gồm [Plan A](outputs/trends/dashboard-preview.png), [Plan B](outputs/ml_forecast/dashboard-preview.png) và [Plan C](outputs/streaming/dashboard-preview.png). Để dùng dashboard tương tác, tải repo và mở file HTML trên máy.
 - jobs/ chứa ETL, kiểm định, SQL, ML, replay và dựng dashboard.
 - sql/ chứa truy vấn tổng hợp, tests/ chứa đối chiếu độc lập.
 - outputs/quality, analytics, trends, forecast, ml_forecast và streaming chứa kết quả từng phần.
 - reporting/ lưu tài liệu chuẩn bị theo ngày. Dùng README và DEMO_A_B_C.md cho thứ tự chạy hiện tại.
-- docs/ giữ tài liệu từ những lượt chuẩn bị trước. Kịch bản slide và PowerShell ở đầu danh sách tài liệu dùng cho demo A → B → C hiện tại.
 
 ## Môi trường kỹ thuật
 

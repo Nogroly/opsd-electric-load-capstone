@@ -1,8 +1,8 @@
 {
   "status": "PASSED",
-  "run_id": "e7731311-08cd-4857-ba41-0d5c3e17b607",
-  "created_utc": "2026-11-18T15:28:18.407147+00:00",
-  "etl_run_id": "d018b7b3-ce13-47f3-ab14-4354382e4844",
+  "run_id": "6dead9fe-f6c6-4fbb-b325-10e15bd0e7ec",
+  "created_utc": "2026-11-19T15:33:18.412387+00:00",
+  "etl_run_id": "6d1e7354-e251-4ba5-87ab-5fe31840b27d",
   "hdfs_input": "hdfs://namenode:8020/bigdata/opsd/processed/de_2019",
   "source_sha256": "6a7f2bc571314cbf9c321cc03437691cd4be95c3a6f075e60ff99e8035c704c8",
   "unit": "MW",
